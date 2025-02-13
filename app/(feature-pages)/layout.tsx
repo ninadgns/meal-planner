@@ -43,14 +43,20 @@ export default function RootLayout({
               <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
                 <div className="w-full max-w-7xl flex justify-between items-center p-3 px-5 text-sm">
                   <Link className="flex gap-2 items-center font-semibold" href={"/"}><ChefHat />MealPlanner</Link>
-                  {!hasEnvVars ? <EnvVarWarning /> : <HeaderAuth />}
+                  <div className="flex gap-5 align-text-bottom">
+                    <ThemeSwitcher  />
+                    {!hasEnvVars ? <EnvVarWarning /> : <HeaderAuth />}
+                  </div>
                 </div>
               </nav>
-              <div className="flex flex-col w-full">
+              <div className="flex flex-col w-full min-h-[90vh] mt-5">
                 {children}
               </div>
 
-              <footer className="w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-16">
+              <footer className="w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8">
+                <p>Made by <a href="https://github.com/ninadgns/" target="_blank" className="font-bold hover:underline" rel="noreferrer">Ninad</a> and <a href="https://github.com/TanzilaKhan1" target="_blank" className="font-bold hover:underline" rel="noreferrer">Tanzila</a>
+
+                </p>
                 <p>
                   Powered by{" "}
                   <a
@@ -62,7 +68,6 @@ export default function RootLayout({
                     Supabase
                   </a>
                 </p>
-                <ThemeSwitcher />
               </footer>
             </div>
           </main>
