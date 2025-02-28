@@ -56,7 +56,7 @@ export default function Home() {
         <section className="text-center">
           <h2 className="text-2xl font-semibold mb-4">Ready to simplify your meal planning?</h2>
           <Button size="lg" asChild>
-            <Link href="/signup">Get Started Now</Link>
+            <Link href="/recipes">Get Started Now</Link>
           </Button>
         </section>
       </main>

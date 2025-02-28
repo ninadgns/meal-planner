@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'
 import Link from 'next/link'
 import './globals.css'
 import { Button } from "@/components/ui/button"
+import SupabaseLogo from '@/components/supabase-logo'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,45 +19,37 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        {children}
-        {/* <div className="flex flex-col min-h-screen">
-          <header className="border-b">
-            <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-              <Link href="/" className="text-2xl font-bold">MealPlanner</Link>
-              <nav>
-                <ul className="flex space-x-4">
-                  <li><Link href="/" className="hover:underline">Home</Link></li>
-                  <li><Link href="/features" className="hover:underline">Features</Link></li>
-                  <li><Link href="/pricing" className="hover:underline">Pricing</Link></li>
-                  <li><Button variant="outline" asChild><Link href="/signin">Sign In</Link></Button></li>
-                  <li><Button asChild><Link href="/signup">Sign Up</Link></Button></li>
-                </ul>
-              </nav>
-            </div>
-          </header>
+      <body className={`${inter.className} flex flex-col min-h-screen`}>
+        {/* Main Content Area */}
+        <div className="flex-grow">
+          {children}
+        </div>
 
-          <main className="flex-grow">
-            {children}
-          </main>
-
-          <footer className="border-t mt-8">
-            <div className="container mx-auto px-4 py-6">
-              <div className="flex justify-between items-center">
-                <p>&copy; 2023 MealPlanner. All rights reserved.</p>
-                <nav>
-                  <ul className="flex space-x-4">
-                    <li><Link href="/privacy" className="hover:underline">Privacy Policy</Link></li>
-                    <li><Link href="/terms" className="hover:underline">Terms of Service</Link></li>
-                    <li><Link href="/contact" className="hover:underline">Contact Us</Link></li>
-                  </ul>
-                </nav>
-              </div>
-            </div>
-          </footer>
-        </div> */}
+        {/* Footer Always at the Bottom */}
+        <footer className="w-full flex items-center justify-between border-t px-10 mx-auto text-center text-xs gap-8 py-4">
+          <p>
+            Made by{" "}
+            <a href="https://github.com/ninadgns/" target="_blank" className="font-bold hover:underline" rel="noreferrer">
+              Ninad
+            </a>{" "}
+            and{" "}
+            <a href="https://github.com/TanzilaKhan1" target="_blank" className="font-bold hover:underline" rel="noreferrer">
+              Tanzila
+            </a>
+          </p>
+          <p className="flex gap-2">
+            Powered by{" "}
+            <a
+              href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
+              target="_blank"
+              className="font-bold hover:underline"
+              rel="noreferrer"
+            >
+              <SupabaseLogo />
+            </a>
+          </p>
+        </footer>
       </body>
     </html>
   )
 }
-
