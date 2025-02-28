@@ -75,43 +75,57 @@ export type Database = {
       }
       diets_type_1: {
         Row: {
-          daily_calorie_max: number | null
-          daily_calorie_min: number | null
-          daily_carbs_max: number | null
-          daily_carbs_min: number | null
-          daily_fat_max: number | null
-          daily_fat_min: number | null
-          daily_protein_max: number | null
-          daily_protein_min: number | null
           diet_id: string
+          per_meal_calorie_max: number | null
+          per_meal_calorie_min: number | null
+          per_meal_carbs_max: number | null
+          per_meal_carbs_min: number | null
+          per_meal_fat_max: number | null
+          per_meal_fat_min: number | null
+          per_meal_protein_max: number | null
+          per_meal_protein_min: number | null
         }
         Insert: {
-          daily_calorie_max?: number | null
-          daily_calorie_min?: number | null
-          daily_carbs_max?: number | null
-          daily_carbs_min?: number | null
-          daily_fat_max?: number | null
-          daily_fat_min?: number | null
-          daily_protein_max?: number | null
-          daily_protein_min?: number | null
           diet_id: string
+          per_meal_calorie_max?: number | null
+          per_meal_calorie_min?: number | null
+          per_meal_carbs_max?: number | null
+          per_meal_carbs_min?: number | null
+          per_meal_fat_max?: number | null
+          per_meal_fat_min?: number | null
+          per_meal_protein_max?: number | null
+          per_meal_protein_min?: number | null
         }
         Update: {
-          daily_calorie_max?: number | null
-          daily_calorie_min?: number | null
-          daily_carbs_max?: number | null
-          daily_carbs_min?: number | null
-          daily_fat_max?: number | null
-          daily_fat_min?: number | null
-          daily_protein_max?: number | null
-          daily_protein_min?: number | null
           diet_id?: string
+          per_meal_calorie_max?: number | null
+          per_meal_calorie_min?: number | null
+          per_meal_carbs_max?: number | null
+          per_meal_carbs_min?: number | null
+          per_meal_fat_max?: number | null
+          per_meal_fat_min?: number | null
+          per_meal_protein_max?: number | null
+          per_meal_protein_min?: number | null
         }
         Relationships: [
           {
             foreignKeyName: "diets_type_1_diet_id_fkey"
             columns: ["diet_id"]
-            isOneToOne: false
+            isOneToOne: true
+            referencedRelation: "diet_recipe_applicability_type1"
+            referencedColumns: ["diet_id"]
+          },
+          {
+            foreignKeyName: "diets_type_1_diet_id_fkey"
+            columns: ["diet_id"]
+            isOneToOne: true
+            referencedRelation: "diet_recipe_applicability_type2"
+            referencedColumns: ["diet_id"]
+          },
+          {
+            foreignKeyName: "diets_type_1_diet_id_fkey"
+            columns: ["diet_id"]
+            isOneToOne: true
             referencedRelation: "diets"
             referencedColumns: ["diet_id"]
           },
@@ -137,6 +151,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "categories"
             referencedColumns: ["category_id"]
+          },
+          {
+            foreignKeyName: "diets_type_2_diet_id_fkey"
+            columns: ["diet_id"]
+            isOneToOne: false
+            referencedRelation: "diet_recipe_applicability_type1"
+            referencedColumns: ["diet_id"]
+          },
+          {
+            foreignKeyName: "diets_type_2_diet_id_fkey"
+            columns: ["diet_id"]
+            isOneToOne: false
+            referencedRelation: "diet_recipe_applicability_type2"
+            referencedColumns: ["diet_id"]
           },
           {
             foreignKeyName: "diets_type_2_diet_id_fkey"
@@ -175,23 +203,17 @@ export type Database = {
       }
       meal_plan_recipes: {
         Row: {
-          meal_date: string
           meal_plan_id: string
-          meal_type: string
           recipe_id: string
           servings: number | null
         }
         Insert: {
-          meal_date: string
           meal_plan_id: string
-          meal_type: string
           recipe_id: string
           servings?: number | null
         }
         Update: {
-          meal_date?: string
           meal_plan_id?: string
-          meal_type?: string
           recipe_id?: string
           servings?: number | null
         }
@@ -207,6 +229,20 @@ export type Database = {
             foreignKeyName: "meal_plan_recipes_recipe_id_fkey"
             columns: ["recipe_id"]
             isOneToOne: false
+            referencedRelation: "diet_recipe_applicability_type1"
+            referencedColumns: ["recipe_id"]
+          },
+          {
+            foreignKeyName: "meal_plan_recipes_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "diet_recipe_applicability_type2"
+            referencedColumns: ["recipe_id"]
+          },
+          {
+            foreignKeyName: "meal_plan_recipes_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
             referencedRelation: "recipes"
             referencedColumns: ["recipe_id"]
           },
@@ -214,37 +250,18 @@ export type Database = {
       }
       meal_plans: {
         Row: {
-          diet_id: string | null
-          end_date: string
           meal_plan_id: string
-          name: string
-          start_date: string
           user_id: string
         }
         Insert: {
-          diet_id?: string | null
-          end_date: string
           meal_plan_id: string
-          name: string
-          start_date: string
           user_id: string
         }
         Update: {
-          diet_id?: string | null
-          end_date?: string
           meal_plan_id?: string
-          name?: string
-          start_date?: string
           user_id?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "meal_plans_diet_id_fkey"
-            columns: ["diet_id"]
-            isOneToOne: false
-            referencedRelation: "diets"
-            referencedColumns: ["diet_id"]
-          },
           {
             foreignKeyName: "meal_plans_user_id_fkey"
             columns: ["user_id"]
@@ -257,19 +274,19 @@ export type Database = {
       recipe_ingredients: {
         Row: {
           ingredient_id: string
-          quantity: number
+          quantity_per_serving: number
           recipe_id: string
           unit: string
         }
         Insert: {
           ingredient_id: string
-          quantity: number
+          quantity_per_serving: number
           recipe_id: string
           unit: string
         }
         Update: {
           ingredient_id?: string
-          quantity?: number
+          quantity_per_serving?: number
           recipe_id?: string
           unit?: string
         }
@@ -285,6 +302,20 @@ export type Database = {
             foreignKeyName: "recipe_ingredients_recipe_id_fkey"
             columns: ["recipe_id"]
             isOneToOne: false
+            referencedRelation: "diet_recipe_applicability_type1"
+            referencedColumns: ["recipe_id"]
+          },
+          {
+            foreignKeyName: "recipe_ingredients_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "diet_recipe_applicability_type2"
+            referencedColumns: ["recipe_id"]
+          },
+          {
+            foreignKeyName: "recipe_ingredients_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
             referencedRelation: "recipes"
             referencedColumns: ["recipe_id"]
           },
@@ -294,8 +325,9 @@ export type Database = {
         Row: {
           calories_per_serving: number
           carbs_per_serving: number
-          fat_per_serving: number
+          cooking_time: number 
           description: string | null
+          fat_per_serving: number
           protein_per_serving: number
           recipe_id: string
           serving_size: string
@@ -304,8 +336,9 @@ export type Database = {
         Insert: {
           calories_per_serving: number
           carbs_per_serving: number
-          fat_per_serving: number
+          cooking_time?: number 
           description?: string | null
+          fat_per_serving: number
           protein_per_serving: number
           recipe_id: string
           serving_size: string
@@ -314,8 +347,9 @@ export type Database = {
         Update: {
           calories_per_serving?: number
           carbs_per_serving?: number
-          fat_per_serving?: number
+          cooking_time?: number
           description?: string | null
+          fat_per_serving?: number
           protein_per_serving?: number
           recipe_id?: string
           serving_size?: string
@@ -374,6 +408,20 @@ export type Database = {
             foreignKeyName: "user_diets_diet_id_fkey"
             columns: ["diet_id"]
             isOneToOne: false
+            referencedRelation: "diet_recipe_applicability_type1"
+            referencedColumns: ["diet_id"]
+          },
+          {
+            foreignKeyName: "user_diets_diet_id_fkey"
+            columns: ["diet_id"]
+            isOneToOne: false
+            referencedRelation: "diet_recipe_applicability_type2"
+            referencedColumns: ["diet_id"]
+          },
+          {
+            foreignKeyName: "user_diets_diet_id_fkey"
+            columns: ["diet_id"]
+            isOneToOne: false
             referencedRelation: "diets"
             referencedColumns: ["diet_id"]
           },
@@ -412,11 +460,20 @@ export type Database = {
       }
     }
     Views: {
-      recipe_nutrition: {
+      diet_recipe_applicability_type1: {
         Row: {
-          calories_per_serving: number | null
-          ingredients: string | null
-          protein_per_serving: number | null
+          diet_id: string | null
+          diet_name: string | null
+          recipe_id: string | null
+          title: string | null
+        }
+        Relationships: []
+      }
+      diet_recipe_applicability_type2: {
+        Row: {
+          diet_id: string | null
+          diet_name: string | null
+          recipe_id: string | null
           title: string | null
         }
         Relationships: []

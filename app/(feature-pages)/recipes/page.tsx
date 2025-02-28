@@ -1,27 +1,35 @@
-import ProductGrid from "./components/ProductGrid"
-import FilterSidebar from "./components/FilterSidebar"
-import { createClient } from "@/utils/supabase/server";
+import ProductGrid from "./components/ProductGrid";
+import FilterSidebar from "./components/FilterSidebar";
+import { createClient } from "@/utils/supabase/client";
+import { Ingredients, Recipes } from "@/utils/type";
+import FilterScreen from "./FilterScreen";
 
-export default async  function ProductPage() {
+export interface RecipeWithIngredients {
+  recipe: Recipes;
+  ingredients: Ingredients[];
+}
+export default async function ProductPage() {
 
+  //This part fetches all the recipes and sends them to the FilterScreen component
   const supabase = await createClient();
-  const {data:recipes, error:recipeError} = await  supabase.from("recipes").select("*");
-  if(!recipes || recipeError)
-  return console.log("error fetching recipes");
+  const { data, error } = await supabase
+    .from("recipe_ingredients")
+    .select("recipe:recipe_id(*), ingredients(*)");
 
+  if (error) {
+    console.error("Error fetching recipes with ingredients:", error);
+    return {};
+  }
+  const recipeData: Record<string, RecipeWithIngredients> = {};
+  data.forEach(({ recipe, ingredients }: { recipe: Recipes, ingredients: Ingredients }) => {
+    if (!recipeData[recipe.recipe_id]) {
+      recipeData[recipe.recipe_id] = { recipe, ingredients: [] };
+    }
+    recipeData[recipe.recipe_id].ingredients.push(ingredients);
+  });
 
   return (
-    <div className="container ">
-      <h1 className="text-4xl mt-5 font-bold mb-8">Our Products</h1>
-      <div className="flex flex-col lg:flex-row gap-8">
-        <aside className="w-full lg:w-1/5">
-          <FilterSidebar />
-        </aside>
-        <main className="w-full lg:w-4/5">
-          <ProductGrid recipes={recipes} />
-        </main>
-      </div>
-    </div>
+    <FilterScreen recipeWithIngredients={Object.values(recipeData)} />
   )
 }
 
