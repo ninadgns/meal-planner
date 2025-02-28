@@ -29,12 +29,12 @@ export default function RootLayout({
         <footer className="w-full flex items-center justify-between border-t px-10 mx-auto text-center text-xs gap-8 py-4">
           <p>
             Made by{" "}
-            <a href="https://github.com/ninadgns/" target="_blank" className="font-bold hover:underline" rel="noreferrer">
-              Ninad
-            </a>{" "}
-            and{" "}
             <a href="https://github.com/TanzilaKhan1" target="_blank" className="font-bold hover:underline" rel="noreferrer">
               Tanzila
+            </a>{" "}
+            and{" "}
+            <a href="https://github.com/ninadgns/" target="_blank" className="font-bold hover:underline" rel="noreferrer">
+              Ninad
             </a>
           </p>
           <p className="flex gap-2">
