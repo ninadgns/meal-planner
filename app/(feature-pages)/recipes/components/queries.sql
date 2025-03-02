@@ -2,7 +2,7 @@
 SELECT title, calories_per_serving, protein_per_serving, carbs_per_serving, fat_per_serving
 FROM recipes
 ORDER BY calories_per_serving DESC;
-
+ 
 -- Find recipes within specific calorie range using subquery
 SELECT r.title, r.calories_per_serving
 FROM recipes r
@@ -90,7 +90,10 @@ SELECT r.title, i.name, ri.quantity, ri.unit
 FROM recipes r
 JOIN recipe_ingredients ri USING (recipe_id)
 JOIN ingredients i USING (ingredient_id)
-ORDER BY r.title; -- 5. Subquery with ALL: Find recipes with calories higher than all keto diet minimum requirements
+ORDER BY r.title; 
+
+
+-- 5. Subquery with ALL: Find recipes with calories higher than all keto diet minimum requirements
 SELECT title, calories_per_serving
 FROM recipes
 WHERE calories_per_serving > ALL (

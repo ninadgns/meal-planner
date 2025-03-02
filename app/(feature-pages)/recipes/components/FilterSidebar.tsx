@@ -35,9 +35,8 @@ export default function FilterSidebar({
 
   return (
     <div className="w-full p-4 border rounded-md space-y-4">
+      <h1 className="text-lg font-bold">Filter by</h1>
       <Accordion type="multiple" className="w-full">
-        
-
         {/* Allergies Filter */}
         <AccordionItem value="dietType">
           <AccordionTrigger>Diet Type</AccordionTrigger>
@@ -87,6 +86,14 @@ export default function FilterSidebar({
                 <span>{cookingTime[0]} mins</span>
                 <span>{cookingTime[1]} mins</span>
               </div>
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="allergy">
+          <AccordionTrigger>Allergy</AccordionTrigger>
+          <AccordionContent>
+            <div className="space-y-4">
+              
             </div>
           </AccordionContent>
         </AccordionItem>

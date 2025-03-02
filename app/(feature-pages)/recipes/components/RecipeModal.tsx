@@ -10,10 +10,11 @@ import {
 } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { Clock, Users, ChefHat } from "lucide-react"
+import { Clock, Users, ChefHat, CookingPot } from "lucide-react"
 import { Ingredients, Recipes } from "@/utils/type"
 import { useState } from "react"
 import { createClient } from "@/utils/supabase/client"
+import { formatCookingTime } from "./ProductGrid"
 
 
 
@@ -24,7 +25,7 @@ export function RecipeModal({ recipe, ingredients}: { recipe: Recipes; ingredien
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button  variant="outline" className="bg-green-400">View Recipe</Button>
+        <Button  variant="default">View Recipe</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[600px]">
         <DialogHeader>
@@ -35,10 +36,10 @@ export function RecipeModal({ recipe, ingredients}: { recipe: Recipes; ingredien
         <div className="flex flex-wrap gap-2 my-2">
           <div className="flex items-center gap-1 text-sm">
             <Clock className="h-4 w-4 text-muted-foreground" />
-            <span>{recipe.cooking_time} mins</span>
+            <span>{formatCookingTime(recipe.cooking_time)}</span>
           </div>
           <div className="flex items-center gap-1 text-sm">
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <CookingPot className="h-4 w-4 text-muted-foreground" />
             <span>{recipe.serving_size}</span>
           </div>
           {/* {recipe.difficulty && (

@@ -20,13 +20,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} flex flex-col min-h-screen`}>
-        {/* Main Content Area */}
-        <div className="flex-grow">
+        <div className="flex flex-col flex-grow mb-8">
           {children}
         </div>
 
         {/* Footer Always at the Bottom */}
-        <footer className="w-full flex items-center justify-between border-t px-10 mx-auto text-center text-xs gap-8 py-4">
+        <footer className="w-full flex items-center justify-between border-t px-10 mx-auto text-center text-xs gap-8 py-4 mt-auto">
           <p>
             Made by{" "}
             <a href="https://github.com/TanzilaKhan1" target="_blank" className="font-bold hover:underline" rel="noreferrer">
@@ -53,3 +52,4 @@ export default function RootLayout({
     </html>
   )
 }
+
