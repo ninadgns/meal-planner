@@ -6,31 +6,31 @@ import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { FilterProps } from "../FilterScreen";
+import MultiSelectCombobox from "./MultiSelect";
+import { Ingredients } from "@/utils/type";
 
 // const categories = ["Breakfast", "Lunch", "Dinner", "Snack", "Dessert"];
-const allergies = ["Diabetic", "Keto", "Low Protein", "Cardiac", "Gluten-Free", "Lactose-Free", "Low Cholesterol", "Vegetarian"];
-
-// Define props type
-interface FilterSidebarProps {
-  onFilterApply: (filters: FilterProps) => void;
-}
+const preferences = ["Diabetic", "Keto", "Low Protein", "Cardiac", "Gluten-Free", "Lactose-Free", "Low Cholesterol", "Vegetarian"];
 
 export default function FilterSidebar({
   onFilterApply,
   calorieRange,
+  ingredients,
   cookingTimeRange
 }: {
   onFilterApply: (filters: FilterProps) => void;
   calorieRange: { min: number; max: number };
   cookingTimeRange: { min: number; max: number };
+  ingredients: Ingredients[];
 }) {
 
 
   const [selectedCalorie, setSelectedCalorie] = useState<number[]>([calorieRange.min, calorieRange.max]);
   const [cookingTime, setCookingTime] = useState<number[]>([cookingTimeRange.min, cookingTimeRange.max]);
+  const [ingredientsToAvoid, setIngredientsToAvoid] = useState<string[]>([])
 
   const onApplyFilters = () => {
-    onFilterApply({ calorie: selectedCalorie, cookingTime });
+    onFilterApply({ calorie: selectedCalorie, cookingTime, ingredientsToAvoid });
   };
 
   return (
@@ -42,10 +42,10 @@ export default function FilterSidebar({
           <AccordionTrigger>Diet Type</AccordionTrigger>
           <AccordionContent>
             <div className="space-y-2">
-              {allergies.map((allergy) => (
-                <div key={allergy} className="flex items-center space-x-2">
-                  <Checkbox id={`diet-${allergy}`} />
-                  <Label htmlFor={`diet-${allergy}`}>{allergy}</Label>
+              {preferences.map((preference) => (
+                <div key={preference} className="flex items-center space-x-2">
+                  <Checkbox id={`diet-${preference}`} />
+                  <Label htmlFor={`diet-${preference}`}>{preference}</Label>
                 </div>
               ))}
             </div>
@@ -93,7 +93,12 @@ export default function FilterSidebar({
           <AccordionTrigger>Allergy</AccordionTrigger>
           <AccordionContent>
             <div className="space-y-4">
-              
+              <MultiSelectCombobox
+              options={ingredients.map((ingredient) => ({ value: ingredient.ingredient_id, label: ingredient.name }))}
+              onChange={setIngredientsToAvoid}
+              value={ingredientsToAvoid}
+              placeholder="Ingredients to avoid..."
+            />
             </div>
           </AccordionContent>
         </AccordionItem>

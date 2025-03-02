@@ -39,7 +39,7 @@ export default function RecipeGrid({ recipeWithIngredients }: { recipeWithIngred
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {recipeWithIngredients.map(({ recipe, ingredients }) => (
-        <div className=" max-w-md w-full bg-card p-6 rounded-lg shadow-sm border flex flex-col justify-between gap-2">
+        <div className=" max-w-md w-full bg-card p-6 rounded-lg shadow-sm border flex flex-col justify-between gap-2" key={recipe.recipe_id}>
           <div className="">
             <h2 className="text-xl font-semibold mb-2">{recipe.title}</h2>
             <p className="text-muted-foreground mb-4 text-wrap">{recipe.description}</p>

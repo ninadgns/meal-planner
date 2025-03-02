@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 export interface FilterProps {
   calorie: number[];
   cookingTime: number[];
+  ingredientsToAvoid: string[];
 }
 
 const FilterScreen = ({ recipeWithIngredients }: { recipeWithIngredients: RecipeWithIngredients[] }) => {
@@ -25,27 +26,38 @@ const FilterScreen = ({ recipeWithIngredients }: { recipeWithIngredients: Recipe
     max: Math.max(...recipeWithIngredients.map(({ recipe }) => recipe.cooking_time)),
   };
 
+  const allIngredients = recipeWithIngredients.flatMap(({ ingredients }) => ingredients);
+  const uniqueIngredients = Array.from(
+    new Map(allIngredients.map((ingredient) => [ingredient.name, ingredient])).values()
+  );
+
+
   const handleFilterApply = (filters: FilterProps) => {
     console.log("Applied Filters:", filters);
 
-    const filtered = filteredRecipes.filter(({ recipe }) => {
-      const matchesCookingTime =
-        filters.cookingTime
-          ? recipe.cooking_time >= filters.cookingTime[0] &&
-            recipe.cooking_time <= filters.cookingTime[1]
-          : true;
+    const filtered = recipeWithIngredients.filter(({ recipe, ingredients }) => {
+      const matchesCookingTime = filters.cookingTime 
+        ? recipe.cooking_time >= filters.cookingTime[0] && recipe.cooking_time <= filters.cookingTime[1] 
+        : true;
 
-      const matchesCalorieRange =
-        filters.calorie
-          ? recipe.calories_per_serving >= filters.calorie[0] &&
-            recipe.calories_per_serving <= filters.calorie[1]
-          : true;
+      const matchesCalorieRange = filters.calorie 
+        ? recipe.calories_per_serving >= filters.calorie[0] && recipe.calories_per_serving <= filters.calorie[1] 
+        : true;
 
-      return matchesCookingTime && matchesCalorieRange;
+      const matchesIngredientAvoidance = filters.ingredientsToAvoid.length > 0
+        ? !ingredients.some(ingredient => filters.ingredientsToAvoid.includes(ingredient.ingredient_id))
+        : true;
+
+      return matchesCookingTime && matchesCalorieRange && matchesIngredientAvoidance;
     });
+    if (sortCriteria) {
+      filtered.sort((a, b) => a.recipe[sortCriteria] - b.recipe[sortCriteria]);
+    }
 
     setFilteredRecipes(filtered);
-  };
+    
+};
+
 
   const handleSort = (criteria: "cooking_time" | "calories_per_serving") => {
     setSortCriteria(criteria);
@@ -53,15 +65,17 @@ const FilterScreen = ({ recipeWithIngredients }: { recipeWithIngredients: Recipe
     setFilteredRecipes(sortedRecipes);
   };
 
+
   return (
     <div className="container">
-      <h1 className="text-4xl font-bold mb-3">Recipes</h1>
+      <h1 className="px-4 text-3xl font-bold mb-3">Recipes</h1>
       <div className="flex flex-col lg:flex-row gap-8">
         <aside className="w-full lg:w-1/5">
           <FilterSidebar
             onFilterApply={handleFilterApply}
             calorieRange={calorieRange}
             cookingTimeRange={cookingTimeRange}
+            ingredients={uniqueIngredients}
           />
         </aside>
         <main className="w-full lg:w-4/5">

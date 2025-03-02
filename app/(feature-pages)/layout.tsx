@@ -40,9 +40,9 @@ export default function RootLayout({
         >
           <main className="min-h-screen flex flex-col items-center">
             <div className="flex-1 w-full flex flex-col items-center">
-              <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
-                <div className="w-full max-w-7xl flex justify-between items-center p-3 px-5 text-sm">
-                  <Link className="flex gap-2 items-center font-semibold" href={"/"}><ChefHat />MealPlanner</Link>
+              <nav className="pl-4 w-full flex justify-center border-b border-b-foreground/10 h-16">
+                <div className="w-full  flex justify-between items-center p-3 px-9 text-sm">
+                  <Link className="flex gap-2 font-semibold text-lg" href={"/"}><ChefHat />MealPlanner</Link>
                   <div className="flex gap-5 align-text-bottom">
                     <ThemeSwitcher  />
                     {!hasEnvVars ? <EnvVarWarning /> : <HeaderAuth />}
