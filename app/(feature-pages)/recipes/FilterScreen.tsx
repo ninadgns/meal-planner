@@ -149,7 +149,7 @@ const FilterScreen = ({ recipeWithIngredients }: { recipeWithIngredients: Recipe
             <div className="flex gap-5">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="bg-red-100">
+                  <Button variant="outline">
                     Sort By {sortCriteria ? `: ${getSortCriteriaDisplayName(sortCriteria)}` : ""}
                     <ChevronsUpDown className="ml-2 h-4 w-4" />
                   </Button>
