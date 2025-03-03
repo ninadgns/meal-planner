@@ -14,3 +14,15 @@ export function encodedRedirect(
 ) {
   return redirect(`${path}?${type}=${encodeURIComponent(message)}`);
 }
+
+
+export const formatCookingTime = (minutes: number) => {
+  if (minutes % 60 === 0) return `${minutes / 60} hour${minutes === 60 ? "" : "s"}`;
+  return minutes > 59
+    ? `${Math.floor(minutes / 60)}h ${minutes % 60}m`
+    : `${minutes} mins`;
+};
+
+
+
+

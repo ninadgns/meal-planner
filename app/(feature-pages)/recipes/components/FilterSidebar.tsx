@@ -1,45 +1,132 @@
 "use client";
+import React, { useState, useEffect } from "react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
 import { FilterProps } from "../FilterScreen";
 import MultiSelectCombobox from "./MultiSelect";
 import { Ingredients } from "@/utils/type";
+import { RotateCcw } from "lucide-react";
 
-// const categories = ["Breakfast", "Lunch", "Dinner", "Snack", "Dessert"];
 const preferences = ["Diabetic", "Keto", "Low Protein", "Cardiac", "Gluten-Free", "Lactose-Free", "Low Cholesterol", "Vegetarian"];
 
 export default function FilterSidebar({
   onFilterApply,
   calorieRange,
   ingredients,
-  cookingTimeRange
+  cookingTimeRange,
+  proteinRange,
+  fatRange,
+  carbRange
 }: {
   onFilterApply: (filters: FilterProps) => void;
   calorieRange: { min: number; max: number };
   cookingTimeRange: { min: number; max: number };
+  proteinRange: { min: number; max: number };
+  fatRange: { min: number; max: number };
+  carbRange: { min: number; max: number };
   ingredients: Ingredients[];
 }) {
-
-
-  const [selectedCalorie, setSelectedCalorie] = useState<number[]>([calorieRange.min, calorieRange.max]);
-  const [cookingTime, setCookingTime] = useState<number[]>([cookingTimeRange.min, cookingTimeRange.max]);
-  const [ingredientsToAvoid, setIngredientsToAvoid] = useState<string[]>([])
-
-  const onApplyFilters = () => {
-    onFilterApply({ calorie: selectedCalorie, cookingTime, ingredientsToAvoid });
+  // Store initial values for reset functionality
+  const initialState = {
+    calorie: [calorieRange.min, calorieRange.max],
+    cookingTime: [cookingTimeRange.min, cookingTimeRange.max],
+    protein: [proteinRange.min, proteinRange.max],
+    fat: [fatRange.min, fatRange.max],
+    carb: [carbRange.min, carbRange.max],
+    ingredientsToAvoid: [] as string[],
+    ingredientsToInclude: [] as string[]
   };
 
+  // Current filter state
+  const [filters, setFilters] = useState(initialState);
+  
+  // Track if filters have been modified
+  const [filtersModified, setFiltersModified] = useState(false);
+
+  // Update the modified state whenever filters change
+  useEffect(() => {
+    const isModified = 
+      filters.calorie[0] !== initialState.calorie[0] ||
+      filters.calorie[1] !== initialState.calorie[1] ||
+      filters.cookingTime[0] !== initialState.cookingTime[0] ||
+      filters.cookingTime[1] !== initialState.cookingTime[1] ||
+      filters.protein[0] !== initialState.protein[0] ||
+      filters.protein[1] !== initialState.protein[1] ||
+      filters.fat[0] !== initialState.fat[0] ||
+      filters.fat[1] !== initialState.fat[1] ||
+      filters.carb[0] !== initialState.carb[0] ||
+      filters.carb[1] !== initialState.carb[1] ||
+      filters.ingredientsToAvoid.length > 0 ||
+      filters.ingredientsToInclude.length > 0;
+    
+    setFiltersModified(isModified);
+  }, [filters, initialState]);
+
+  // Handle filter updates with a generic updater function
+  const updateFilter = <K extends keyof typeof filters>(
+    key: K, 
+    value: typeof filters[K]
+  ) => {
+    setFilters(prev => ({ ...prev, [key]: value }));
+  };
+
+  // Apply the current filters
+  const applyFilters = () => {
+    onFilterApply(filters);
+  };
+
+  // Reset all filters to initial values
+  const resetFilters = () => {
+    setFilters(initialState);
+    onFilterApply(initialState);
+  };
+
+  // Helper function to render sliders consistently
+  const renderSlider = (
+    name: keyof typeof filters,
+    value: number[], 
+    min: number, 
+    max: number, 
+    unit: string = ""
+  ) => (
+    <div className="space-y-4">
+      <Slider 
+        max={max} 
+        min={min} 
+        value={value} 
+        onValueChange={(newValue) => updateFilter(name, newValue)} 
+      />
+      <div className="flex justify-between text-sm">
+        <span>{value[0]}{unit}</span>
+        <span>{value[1]}{unit}</span>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="w-full p-4 border rounded-md space-y-4">
-      <h1 className="text-lg font-bold">Filter by</h1>
+    <div className="w-full p-4 border rounded-md space-y-4 relative">
+      <div className="flex justify-between items-center mb-2">
+        <h1 className="text-lg font-bold">Filter Recipes</h1>
+        {filtersModified && (
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={resetFilters} 
+            className="flex items-center text-muted-foreground hover:text-foreground"
+          >
+            <RotateCcw className="mr-1 h-3 w-3" />
+            Reset
+          </Button>
+        )}
+      </div>
+      
       <Accordion type="multiple" className="w-full">
-        {/* Allergies Filter */}
-        <AccordionItem value="dietType">
-          <AccordionTrigger>Diet Type</AccordionTrigger>
+        {/* Diet and Preferences Group */}
+        <AccordionItem value="dietType" className="border-b-2 pb-2">
+          <AccordionTrigger className="font-medium">Diet & Preferences</AccordionTrigger>
           <AccordionContent>
             <div className="space-y-2">
               {preferences.map((preference) => (
@@ -52,61 +139,78 @@ export default function FilterSidebar({
           </AccordionContent>
         </AccordionItem>
 
-        {/* Calorie Filter */}
-        <AccordionItem value="calorie">
-          <AccordionTrigger>Calorie Range</AccordionTrigger>
-          <AccordionContent>
-            <div className="space-y-4">
-              <Slider
-                max={calorieRange.max}
-                min={calorieRange.min}
-                defaultValue={selectedCalorie}
-                onValueChange={setSelectedCalorie} // Updates state on change
-              />
-              <div className="flex justify-between text-sm">
-                <span>{selectedCalorie[0]}</span>
-                <span>{selectedCalorie[1]}</span>
-              </div>
+        {/* Nutritional Information Group */}
+        <AccordionItem value="nutritionalInfo" className="border-b-2 pb-2">
+          <AccordionTrigger className="font-medium">Nutritional Information</AccordionTrigger>
+          <AccordionContent className="space-y-6">
+            <div>
+              <h3 className="text-sm font-medium mb-2">Calories</h3>
+              {renderSlider("calorie", filters.calorie, calorieRange.min, calorieRange.max, " cal")}
+            </div>
+            
+            <div>
+              <h3 className="text-sm font-medium mb-2">Protein</h3>
+              {renderSlider("protein", filters.protein, proteinRange.min, proteinRange.max, "g")}
+            </div>
+            
+            <div>
+              <h3 className="text-sm font-medium mb-2">Carbs</h3>
+              {renderSlider("carb", filters.carb, carbRange.min, carbRange.max, "g")}
+            </div>
+            
+            <div>
+              <h3 className="text-sm font-medium mb-2">Fat</h3>
+              {renderSlider("fat", filters.fat, fatRange.min, fatRange.max, "g")}
             </div>
           </AccordionContent>
         </AccordionItem>
 
-        {/* Cooking Time Filter */}
-        <AccordionItem value="cooking-time">
-          <AccordionTrigger>Cooking Time</AccordionTrigger>
+        {/* Cooking Time Group */}
+        <AccordionItem value="cooking-time" className="border-b-2 pb-2">
+          <AccordionTrigger className="font-medium">Cooking Time</AccordionTrigger>
           <AccordionContent>
-            <div className="space-y-4">
-              <Slider
-                max={cookingTimeRange.max}
-                min={cookingTimeRange.min}
-                defaultValue={cookingTime}
-                onValueChange={setCookingTime} // Updates state on change 
-              />
-              <div className="flex justify-between text-sm">
-                <span>{cookingTime[0]} mins</span>
-                <span>{cookingTime[1]} mins</span>
-              </div>
-            </div>
+            {renderSlider("cookingTime", filters.cookingTime, cookingTimeRange.min, cookingTimeRange.max, " mins")}
           </AccordionContent>
         </AccordionItem>
-        <AccordionItem value="allergy">
-          <AccordionTrigger>Allergy</AccordionTrigger>
-          <AccordionContent>
-            <div className="space-y-4">
-              <MultiSelectCombobox
-              options={ingredients.map((ingredient) => ({ value: ingredient.ingredient_id, label: ingredient.name }))}
-              onChange={setIngredientsToAvoid}
-              value={ingredientsToAvoid}
-              placeholder="Ingredients to avoid..."
-            />
+
+        {/* Ingredients Group */}
+        <AccordionItem value="ingredients" className="border-b-2 pb-2">
+          <AccordionTrigger className="font-medium">Ingredients</AccordionTrigger>
+          <AccordionContent className="space-y-6">
+            <div>
+              <h3 className="text-sm font-medium mb-2">Include These Ingredients</h3>
+              <MultiSelectCombobox 
+                options={ingredients.map((ingredient) => ({ 
+                  value: ingredient.ingredient_id, 
+                  label: ingredient.name 
+                }))} 
+                onChange={(value) => updateFilter("ingredientsToInclude", value)} 
+                value={filters.ingredientsToInclude} 
+                placeholder="Ingredients to include..." 
+              />
+            </div>
+            
+            <div>
+              <h3 className="text-sm font-medium mb-2">Avoid These Ingredients</h3>
+              <MultiSelectCombobox 
+                options={ingredients.map((ingredient) => ({ 
+                  value: ingredient.ingredient_id, 
+                  label: ingredient.name 
+                }))} 
+                onChange={(value) => updateFilter("ingredientsToAvoid", value)} 
+                value={filters.ingredientsToAvoid} 
+                placeholder="Ingredients to avoid..." 
+              />
             </div>
           </AccordionContent>
         </AccordionItem>
       </Accordion>
 
-      {/* Apply Filter Button */}
-      <Button onClick={onApplyFilters} className="w-full">
-        Apply Filter
+      <Button 
+        onClick={applyFilters} 
+        className="w-full mt-6 bg-primary hover:bg-primary/90"
+      >
+        Apply Filters
       </Button>
     </div>
   );

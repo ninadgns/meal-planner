@@ -1,13 +1,7 @@
-import ProductGrid from "./components/ProductGrid";
-import FilterSidebar from "./components/FilterSidebar";
 import { createClient } from "@/utils/supabase/client";
-import { Ingredients, Recipes } from "@/utils/type";
+import { Ingredients, Recipes, RecipeWithIngredients } from "@/utils/type";
 import FilterScreen from "./FilterScreen";
 
-export interface RecipeWithIngredients {
-  recipe: Recipes;
-  ingredients: Ingredients[];
-}
 export default async function ProductPage() {
 
   //This part fetches all the recipes and sends them to the FilterScreen component
