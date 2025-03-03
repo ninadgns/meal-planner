@@ -26,7 +26,7 @@ type SortCriteria = "cooking_time" | "calories_per_serving" | "protein_per_servi
 const FilterScreen = ({ recipeWithIngredients }: { recipeWithIngredients: RecipeWithIngredients[] }) => {
   const [filteredRecipes, setFilteredRecipes] = useState<RecipeWithIngredients[]>(recipeWithIngredients);
   const [sortCriteria, setSortCriteria] = useState<SortCriteria>("");
-  const [view, setView] = useState<"grid" | "table">("table");
+  const [view, setView] = useState<"grid" | "table">("grid");
 
   // Pre-calculate ranges and ingredients using useMemo to avoid recalculation on re-renders
   const calorieRange = useMemo(() => ({
