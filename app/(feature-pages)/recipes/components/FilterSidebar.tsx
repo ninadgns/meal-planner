@@ -1,16 +1,16 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { FilterProps } from "../FilterScreen";
 import MultiSelectCombobox from "./MultiSelect";
 import { Ingredients } from "@/utils/type";
-import { RotateCcw } from "lucide-react";
+import { Radio, RotateCcw } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
-const preferences = ["Diabetic", "Keto", "Low Protein", "Cardiac", "Gluten-Free", "Lactose-Free", "Low Cholesterol", "Vegetarian"];
+const preferences = ["Diabetic", "Keto", "Low Protein", "Cardiac", "Low Cholesterol"];
 
 export default function FilterSidebar({
   onFilterApply,
@@ -42,13 +42,13 @@ export default function FilterSidebar({
 
   // Current filter state
   const [filters, setFilters] = useState(initialState);
-  
+
   // Track if filters have been modified
   const [filtersModified, setFiltersModified] = useState(false);
 
   // Update the modified state whenever filters change
   useEffect(() => {
-    const isModified = 
+    const isModified =
       filters.calorie[0] !== initialState.calorie[0] ||
       filters.calorie[1] !== initialState.calorie[1] ||
       filters.cookingTime[0] !== initialState.cookingTime[0] ||
@@ -61,13 +61,13 @@ export default function FilterSidebar({
       filters.carb[1] !== initialState.carb[1] ||
       filters.ingredientsToAvoid.length > 0 ||
       filters.ingredientsToInclude.length > 0;
-    
+
     setFiltersModified(isModified);
   }, [filters, initialState]);
 
   // Handle filter updates with a generic updater function
   const updateFilter = <K extends keyof typeof filters>(
-    key: K, 
+    key: K,
     value: typeof filters[K]
   ) => {
     setFilters(prev => ({ ...prev, [key]: value }));
@@ -87,17 +87,17 @@ export default function FilterSidebar({
   // Helper function to render sliders consistently
   const renderSlider = (
     name: keyof typeof filters,
-    value: number[], 
-    min: number, 
-    max: number, 
+    value: number[],
+    min: number,
+    max: number,
     unit: string = ""
   ) => (
     <div className="space-y-4">
-      <Slider 
-        max={max} 
-        min={min} 
-        value={value} 
-        onValueChange={(newValue) => updateFilter(name, newValue)} 
+      <Slider
+        max={max}
+        min={min}
+        value={value}
+        onValueChange={(newValue) => updateFilter(name, newValue)}
       />
       <div className="flex justify-between text-sm">
         <span>{value[0]}{unit}</span>
@@ -111,10 +111,10 @@ export default function FilterSidebar({
       <div className="flex justify-between items-center mb-2">
         <h1 className="text-lg font-bold">Filter Recipes</h1>
         {filtersModified && (
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={resetFilters} 
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={resetFilters}
             className="flex items-center text-muted-foreground hover:text-foreground"
           >
             <RotateCcw className="mr-1 h-3 w-3" />
@@ -122,19 +122,23 @@ export default function FilterSidebar({
           </Button>
         )}
       </div>
-      
+
       <Accordion type="multiple" className="w-full">
         {/* Diet and Preferences Group */}
         <AccordionItem value="dietType" className="border-b-2 pb-2">
           <AccordionTrigger className="font-medium">Diet & Preferences</AccordionTrigger>
           <AccordionContent>
             <div className="space-y-2">
-              {preferences.map((preference) => (
-                <div key={preference} className="flex items-center space-x-2">
-                  <Checkbox id={`diet-${preference}`} />
-                  <Label htmlFor={`diet-${preference}`}>{preference}</Label>
-                </div>
-              ))}
+              <div className="flex items-center space-x-2">
+                <RadioGroup>
+                  {preferences.map((preference) => (
+                    <div key={preference} className="flex items-center space-x-2">
+                      <RadioGroupItem value={preference} id={`diet-${preference}`} />
+                      <Label htmlFor={`diet-${preference}`}>{preference}</Label>
+                    </div>
+                  ))}
+                </RadioGroup>
+              </div>
             </div>
           </AccordionContent>
         </AccordionItem>
@@ -147,17 +151,17 @@ export default function FilterSidebar({
               <h3 className="text-sm font-medium mb-2">Calories</h3>
               {renderSlider("calorie", filters.calorie, calorieRange.min, calorieRange.max, " cal")}
             </div>
-            
+
             <div>
               <h3 className="text-sm font-medium mb-2">Protein</h3>
               {renderSlider("protein", filters.protein, proteinRange.min, proteinRange.max, "g")}
             </div>
-            
+
             <div>
               <h3 className="text-sm font-medium mb-2">Carbs</h3>
               {renderSlider("carb", filters.carb, carbRange.min, carbRange.max, "g")}
             </div>
-            
+
             <div>
               <h3 className="text-sm font-medium mb-2">Fat</h3>
               {renderSlider("fat", filters.fat, fatRange.min, fatRange.max, "g")}
@@ -179,35 +183,35 @@ export default function FilterSidebar({
           <AccordionContent className="space-y-6">
             <div>
               <h3 className="text-sm font-medium mb-2">Include These Ingredients</h3>
-              <MultiSelectCombobox 
-                options={ingredients.map((ingredient) => ({ 
-                  value: ingredient.ingredient_id, 
-                  label: ingredient.name 
-                }))} 
-                onChange={(value) => updateFilter("ingredientsToInclude", value)} 
-                value={filters.ingredientsToInclude} 
-                placeholder="Ingredients to include..." 
+              <MultiSelectCombobox
+                options={ingredients.map((ingredient) => ({
+                  value: ingredient.ingredient_id.toString(),
+                  label: ingredient.name
+                }))}
+                onChange={(value) => updateFilter("ingredientsToInclude", value)}
+                value={filters.ingredientsToInclude}
+                placeholder="Ingredients to include..."
               />
             </div>
-            
+
             <div>
               <h3 className="text-sm font-medium mb-2">Avoid These Ingredients</h3>
-              <MultiSelectCombobox 
-                options={ingredients.map((ingredient) => ({ 
-                  value: ingredient.ingredient_id, 
-                  label: ingredient.name 
-                }))} 
-                onChange={(value) => updateFilter("ingredientsToAvoid", value)} 
-                value={filters.ingredientsToAvoid} 
-                placeholder="Ingredients to avoid..." 
+              <MultiSelectCombobox
+                options={ingredients.map((ingredient) => ({
+                  value: ingredient.ingredient_id.toString(),
+                  label: ingredient.name
+                }))}
+                onChange={(value) => updateFilter("ingredientsToAvoid", value)}
+                value={filters.ingredientsToAvoid}
+                placeholder="Ingredients to avoid..."
               />
             </div>
           </AccordionContent>
         </AccordionItem>
       </Accordion>
 
-      <Button 
-        onClick={applyFilters} 
+      <Button
+        onClick={applyFilters}
         className="w-full mt-6 bg-primary hover:bg-primary/90"
       >
         Apply Filters

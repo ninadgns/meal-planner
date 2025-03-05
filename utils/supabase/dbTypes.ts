@@ -112,20 +112,6 @@ export type Database = {
             foreignKeyName: "diets_type_1_diet_id_fkey"
             columns: ["diet_id"]
             isOneToOne: true
-            referencedRelation: "diet_recipe_applicability_type1"
-            referencedColumns: ["diet_id"]
-          },
-          {
-            foreignKeyName: "diets_type_1_diet_id_fkey"
-            columns: ["diet_id"]
-            isOneToOne: true
-            referencedRelation: "diet_recipe_applicability_type2"
-            referencedColumns: ["diet_id"]
-          },
-          {
-            foreignKeyName: "diets_type_1_diet_id_fkey"
-            columns: ["diet_id"]
-            isOneToOne: true
             referencedRelation: "diets"
             referencedColumns: ["diet_id"]
           },
@@ -156,20 +142,6 @@ export type Database = {
             foreignKeyName: "diets_type_2_diet_id_fkey"
             columns: ["diet_id"]
             isOneToOne: false
-            referencedRelation: "diet_recipe_applicability_type1"
-            referencedColumns: ["diet_id"]
-          },
-          {
-            foreignKeyName: "diets_type_2_diet_id_fkey"
-            columns: ["diet_id"]
-            isOneToOne: false
-            referencedRelation: "diet_recipe_applicability_type2"
-            referencedColumns: ["diet_id"]
-          },
-          {
-            foreignKeyName: "diets_type_2_diet_id_fkey"
-            columns: ["diet_id"]
-            isOneToOne: false
             referencedRelation: "diets"
             referencedColumns: ["diet_id"]
           },
@@ -178,17 +150,17 @@ export type Database = {
       ingredients: {
         Row: {
           category_id: string | null
-          ingredient_id: string
+          ingredient_id: number
           name: string
         }
         Insert: {
           category_id?: string | null
-          ingredient_id: string
+          ingredient_id?: number
           name: string
         }
         Update: {
           category_id?: string | null
-          ingredient_id?: string
+          ingredient_id?: number
           name?: string
         }
         Relationships: [
@@ -204,17 +176,17 @@ export type Database = {
       meal_plan_recipes: {
         Row: {
           meal_plan_id: string
-          recipe_id: string
+          recipe_id: number
           servings: number | null
         }
         Insert: {
           meal_plan_id: string
-          recipe_id: string
+          recipe_id: number
           servings?: number | null
         }
         Update: {
           meal_plan_id?: string
-          recipe_id?: string
+          recipe_id?: number
           servings?: number | null
         }
         Relationships: [
@@ -229,21 +201,28 @@ export type Database = {
             foreignKeyName: "meal_plan_recipes_recipe_id_fkey"
             columns: ["recipe_id"]
             isOneToOne: false
-            referencedRelation: "diet_recipe_applicability_type1"
-            referencedColumns: ["recipe_id"]
-          },
-          {
-            foreignKeyName: "meal_plan_recipes_recipe_id_fkey"
-            columns: ["recipe_id"]
-            isOneToOne: false
-            referencedRelation: "diet_recipe_applicability_type2"
-            referencedColumns: ["recipe_id"]
-          },
-          {
-            foreignKeyName: "meal_plan_recipes_recipe_id_fkey"
-            columns: ["recipe_id"]
-            isOneToOne: false
             referencedRelation: "recipes"
+            referencedColumns: ["recipe_id"]
+          },
+          {
+            foreignKeyName: "meal_plan_recipes_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "user_allergy_safe_recipes"
+            referencedColumns: ["recipe_id"]
+          },
+          {
+            foreignKeyName: "meal_plan_recipes_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "user_categorical_diet_recipes"
+            referencedColumns: ["recipe_id"]
+          },
+          {
+            foreignKeyName: "meal_plan_recipes_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "user_nutritional_diet_recipes"
             referencedColumns: ["recipe_id"]
           },
         ]
@@ -266,28 +245,49 @@ export type Database = {
             foreignKeyName: "meal_plans_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "users"
+            referencedRelation: "user_allergy_safe_recipes"
             referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "meal_plans_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "user_categorical_diet_recipes"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "meal_plans_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "user_nutritional_diet_recipes"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "meal_plans_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
           },
         ]
       }
       recipe_ingredients: {
         Row: {
-          ingredient_id: string
+          ingredient_id: number
           quantity_per_serving: number
-          recipe_id: string
+          recipe_id: number
           unit: string
         }
         Insert: {
-          ingredient_id: string
+          ingredient_id: number
           quantity_per_serving: number
-          recipe_id: string
+          recipe_id: number
           unit: string
         }
         Update: {
-          ingredient_id?: string
+          ingredient_id?: number
           quantity_per_serving?: number
-          recipe_id?: string
+          recipe_id?: number
           unit?: string
         }
         Relationships: [
@@ -302,21 +302,28 @@ export type Database = {
             foreignKeyName: "recipe_ingredients_recipe_id_fkey"
             columns: ["recipe_id"]
             isOneToOne: false
-            referencedRelation: "diet_recipe_applicability_type1"
-            referencedColumns: ["recipe_id"]
-          },
-          {
-            foreignKeyName: "recipe_ingredients_recipe_id_fkey"
-            columns: ["recipe_id"]
-            isOneToOne: false
-            referencedRelation: "diet_recipe_applicability_type2"
-            referencedColumns: ["recipe_id"]
-          },
-          {
-            foreignKeyName: "recipe_ingredients_recipe_id_fkey"
-            columns: ["recipe_id"]
-            isOneToOne: false
             referencedRelation: "recipes"
+            referencedColumns: ["recipe_id"]
+          },
+          {
+            foreignKeyName: "recipe_ingredients_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "user_allergy_safe_recipes"
+            referencedColumns: ["recipe_id"]
+          },
+          {
+            foreignKeyName: "recipe_ingredients_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "user_categorical_diet_recipes"
+            referencedColumns: ["recipe_id"]
+          },
+          {
+            foreignKeyName: "recipe_ingredients_recipe_id_fkey"
+            columns: ["recipe_id"]
+            isOneToOne: false
+            referencedRelation: "user_nutritional_diet_recipes"
             referencedColumns: ["recipe_id"]
           },
         ]
@@ -325,22 +332,22 @@ export type Database = {
         Row: {
           calories_per_serving: number
           carbs_per_serving: number
-          cooking_time: number 
+          cooking_time: number
           description: string | null
           fat_per_serving: number
           protein_per_serving: number
-          recipe_id: string
+          recipe_id: number
           serving_size: string
           title: string
         }
         Insert: {
           calories_per_serving: number
           carbs_per_serving: number
-          cooking_time?: number 
+          cooking_time?: number
           description?: string | null
           fat_per_serving: number
           protein_per_serving: number
-          recipe_id: string
+          recipe_id?: number
           serving_size: string
           title: string
         }
@@ -351,7 +358,7 @@ export type Database = {
           description?: string | null
           fat_per_serving?: number
           protein_per_serving?: number
-          recipe_id?: string
+          recipe_id?: number
           serving_size?: string
           title?: string
         }
@@ -359,17 +366,17 @@ export type Database = {
       }
       user_allergies: {
         Row: {
-          ingredient_id: string
+          ingredient_id: number
           severity: string | null
           user_id: string
         }
         Insert: {
-          ingredient_id: string
+          ingredient_id: number
           severity?: string | null
           user_id: string
         }
         Update: {
-          ingredient_id?: string
+          ingredient_id?: number
           severity?: string | null
           user_id?: string
         }
@@ -385,8 +392,29 @@ export type Database = {
             foreignKeyName: "user_allergies_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "users"
+            referencedRelation: "user_allergy_safe_recipes"
             referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "user_allergies_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "user_categorical_diet_recipes"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "user_allergies_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "user_nutritional_diet_recipes"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "user_allergies_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -408,20 +436,6 @@ export type Database = {
             foreignKeyName: "user_diets_diet_id_fkey"
             columns: ["diet_id"]
             isOneToOne: false
-            referencedRelation: "diet_recipe_applicability_type1"
-            referencedColumns: ["diet_id"]
-          },
-          {
-            foreignKeyName: "user_diets_diet_id_fkey"
-            columns: ["diet_id"]
-            isOneToOne: false
-            referencedRelation: "diet_recipe_applicability_type2"
-            referencedColumns: ["diet_id"]
-          },
-          {
-            foreignKeyName: "user_diets_diet_id_fkey"
-            columns: ["diet_id"]
-            isOneToOne: false
             referencedRelation: "diets"
             referencedColumns: ["diet_id"]
           },
@@ -429,58 +443,90 @@ export type Database = {
             foreignKeyName: "user_diets_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "users"
+            referencedRelation: "user_allergy_safe_recipes"
             referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "user_diets_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "user_categorical_diet_recipes"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "user_diets_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "user_nutritional_diet_recipes"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "user_diets_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
           },
         ]
       }
       users: {
         Row: {
           email: string | null
-          full_name: string | null
           id: string
-          updated_at: string | null
-          user_id: string
+          user_name: string | null
         }
         Insert: {
           email?: string | null
-          full_name?: string | null
           id: string
-          updated_at?: string | null
-          user_id: string
+          user_name?: string | null
         }
         Update: {
           email?: string | null
-          full_name?: string | null
           id?: string
-          updated_at?: string | null
-          user_id?: string
+          user_name?: string | null
         }
         Relationships: []
       }
     }
     Views: {
-      diet_recipe_applicability_type1: {
+      user_allergy_safe_recipes: {
         Row: {
-          diet_id: string | null
-          diet_name: string | null
-          recipe_id: string | null
+          recipe_id: number | null
           title: string | null
+          user_id: string | null
         }
         Relationships: []
       }
-      diet_recipe_applicability_type2: {
+      user_categorical_diet_recipes: {
         Row: {
-          diet_id: string | null
-          diet_name: string | null
-          recipe_id: string | null
+          recipe_id: number | null
           title: string | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
+      user_nutritional_diet_recipes: {
+        Row: {
+          recipe_id: number | null
+          title: string | null
+          user_id: string | null
         }
         Relationships: []
       }
     }
     Functions: {
-      [_ in never]: never
+      get_compatible_recipes: {
+        Args: {
+          p_user_id: string
+        }
+        Returns: {
+          recipe_id: number
+          title: string
+          allergy_safe: boolean
+          nutritional_compliant: boolean
+          categorical_compliant: boolean
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

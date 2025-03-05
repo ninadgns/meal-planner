@@ -4,6 +4,8 @@ import Link from 'next/link'
 import './globals.css'
 import { Button } from "@/components/ui/button"
 import SupabaseLogo from '@/components/supabase-logo'
+import { Toaster } from "@/components/ui/sonner"
+
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -48,6 +50,7 @@ export default function RootLayout({
             </a>
           </p>
         </footer>
+        <Toaster/>
       </body>
     </html>
   )

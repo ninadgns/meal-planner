@@ -9,8 +9,10 @@ export default async function AuthButton() {
   const supabase = await createClient();
 
   const {
-    data: { user },
+    data: { user: authUser },
   } = await supabase.auth.getUser();
+
+  const {data: userData, error:userError} = await supabase.from('users').select('*').eq('id', authUser?.id||"").single();
 
   if (!hasEnvVars) {
     return (
@@ -48,9 +50,9 @@ export default async function AuthButton() {
       </>
     );
   }
-  return user ? (
+  return authUser ? (
     <div className="flex items-center gap-4">
-      Hey, {user.email}!
+      Hey, {userData?.user_name}!
       <form action={signOutAction}>
         <Button type="submit" variant={"outline"}>
           Sign out
