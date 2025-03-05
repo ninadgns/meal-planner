@@ -36,8 +36,8 @@ export default function FilterSidebar({
     protein: [proteinRange.min, proteinRange.max],
     fat: [fatRange.min, fatRange.max],
     carb: [carbRange.min, carbRange.max],
-    ingredientsToAvoid: [] as string[],
-    ingredientsToInclude: [] as string[]
+    ingredientsToAvoid: [] as number[],
+    ingredientsToInclude: [] as number[]
   };
 
   // Current filter state
@@ -180,29 +180,28 @@ export default function FilterSidebar({
         {/* Ingredients Group */}
         <AccordionItem value="ingredients" className="border-b-2 pb-2">
           <AccordionTrigger className="font-medium">Ingredients</AccordionTrigger>
-          <AccordionContent className="space-y-6">
-            <div>
-              <h3 className="text-sm font-medium mb-2">Include These Ingredients</h3>
-              <MultiSelectCombobox
-                options={ingredients.map((ingredient) => ({
-                  value: ingredient.ingredient_id.toString(),
-                  label: ingredient.name
-                }))}
-                onChange={(value) => updateFilter("ingredientsToInclude", value)}
-                value={filters.ingredientsToInclude}
-                placeholder="Ingredients to include..."
-              />
-            </div>
+          <AccordionContent className="space-y-6"><div>
+            <h3 className="text-sm font-medium mb-2">Include These Ingredients</h3>
+            <MultiSelectCombobox
+              options={ingredients.map((ingredient) => ({
+                value: ingredient.ingredient_id.toString(), // Convert number to string
+                label: ingredient.name
+              }))}
+              onChange={(value) => updateFilter("ingredientsToInclude", value.map(Number))} // Convert strings back to numbers
+              value={filters.ingredientsToInclude.map(String)} // Convert numbers to strings
+              placeholder="Ingredients to include..."
+            />
+          </div>
 
             <div>
               <h3 className="text-sm font-medium mb-2">Avoid These Ingredients</h3>
               <MultiSelectCombobox
                 options={ingredients.map((ingredient) => ({
-                  value: ingredient.ingredient_id.toString(),
+                  value: ingredient.ingredient_id.toString(), // Convert number to string
                   label: ingredient.name
                 }))}
-                onChange={(value) => updateFilter("ingredientsToAvoid", value)}
-                value={filters.ingredientsToAvoid}
+                onChange={(value) => updateFilter("ingredientsToAvoid", value.map(Number))} // Convert strings back to numbers
+                value={filters.ingredientsToAvoid.map(String)} // Convert numbers to strings
                 placeholder="Ingredients to avoid..."
               />
             </div>

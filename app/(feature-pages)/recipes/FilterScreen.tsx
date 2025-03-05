@@ -16,8 +16,8 @@ export interface FilterProps {
   fat: number[];
   carb: number[];
   cookingTime: number[];
-  ingredientsToAvoid: string[];
-  ingredientsToInclude: string[];
+  ingredientsToAvoid: number[];
+  ingredientsToInclude: number[];
 }
 
 // Define sort criteria type to include all sortable properties
