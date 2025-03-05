@@ -63,7 +63,7 @@ export default async function AuthButton() {
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
           <form action={signOutAction}>
-            <Button type="submit" variant="ghost" className="w-full text-left">
+            <Button type="submit" variant="destructive" className="w-full text-left">
               Sign out
             </Button>
           </form>

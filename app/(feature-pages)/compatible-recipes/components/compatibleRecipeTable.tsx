@@ -1,48 +1,34 @@
 "use client"
 
-import { useState } from "react"
-import { Check, X, ChevronDown, ChevronUp, ChevronsUpDown } from "lucide-react"
 import {
-    type ColumnDef,
     flexRender,
     getCoreRowModel,
-    useReactTable,
     getSortedRowModel,
+    useReactTable,
+    type ColumnDef,
     type SortingState,
-    getPaginationRowModel,
 } from "@tanstack/react-table"
+import { Check, X } from "lucide-react"
+import { useState } from "react"
 
+import { SortButton } from "@/components/sort-button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { RecipeModal } from "../../recipes/components/RecipeModal"
 import { CompatibleRecipe } from "../page"
-
-
 
 const createColumns = (): ColumnDef<CompatibleRecipe>[] => [
     {
         accessorKey: "title",
+        accessorFn: (row) => row.recipe.title,
         header: ({ column }) => (
-            <Button
-                variant="ghost"
-                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            >
-                Title
-                {getSortIcon(column.getIsSorted())}
-            </Button>
+            <SortButton column={column} label="Title" />
         ),
         cell: ({ row }) => <div className="font-medium">{row.getValue("title")}</div>,
     },
     {
         accessorKey: "allergy_safe",
         header: ({ column }) => (
-            <Button
-                variant="ghost"
-                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            >
-                Allergy Safe
-                {getSortIcon(column.getIsSorted())}
-            </Button>
+            <SortButton column={column} label="Allergy Safe" />
         ),
         cell: ({ row }) => (
             <div className="text-center">
@@ -57,13 +43,7 @@ const createColumns = (): ColumnDef<CompatibleRecipe>[] => [
     {
         accessorKey: "nutritional_compliant",
         header: ({ column }) => (
-            <Button
-                variant="ghost"
-                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            >
-                Nutritional Compliance
-                {getSortIcon(column.getIsSorted())}
-            </Button>
+            <SortButton column={column} label="Nutritional Compliance" />
         ),
         cell: ({ row }) => (
             <div className="text-center">
@@ -78,13 +58,7 @@ const createColumns = (): ColumnDef<CompatibleRecipe>[] => [
     {
         accessorKey: "categorical_compliant",
         header: ({ column }) => (
-            <Button
-                variant="ghost"
-                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            >
-                Categorical Compliance
-                {getSortIcon(column.getIsSorted())}
-            </Button>
+            <SortButton column={column} label="Categorical Compliance" />
         ),
         cell: ({ row }) => (
             <div className="text-center">
@@ -99,19 +73,13 @@ const createColumns = (): ColumnDef<CompatibleRecipe>[] => [
     {
         accessorKey: "fully_compliant",
         header: ({ column }) => (
-            <Button
-                variant="ghost"
-                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-            >
-                Fully Compliant
-                {getSortIcon(column.getIsSorted())}
-            </Button>
+            <SortButton column={column} label="Fully Compliant" />
         ),
         cell: ({ row }) => {
             const isCompliant = row.getValue("fully_compliant")
             return (
                 <div
-                    className={`text-center font-bold text-lg px-2 py-1 rounded-md ${isCompliant ? "bg-green-200 text-green-700" : "bg-red-200 text-red-700"
+                    className={`text-center font-bold text-lg w-fit p-1 mx-auto rounded-md ${isCompliant ? "bg-green-200 text-green-700" : "bg-red-200 text-red-700"
                         }`}
                 >
                     {isCompliant ? (
@@ -123,16 +91,10 @@ const createColumns = (): ColumnDef<CompatibleRecipe>[] => [
             )
         },
     },
-
 ]
 
 // Helper function to get sort icon
-const getSortIcon = (sortDirection: string | boolean) => {
-    return {
-        asc: <ChevronUp className="ml-2 h-4 w-4" />,
-        desc: <ChevronDown className="ml-2 h-4 w-4" />,
-    }[sortDirection as string] ?? <ChevronsUpDown className="ml-2 h-4 w-4" />
-}
+
 
 interface RecipesTableProps {
     recipes: CompatibleRecipe[]
@@ -140,6 +102,7 @@ interface RecipesTableProps {
 
 export function RecipesTable({ recipes }: RecipesTableProps) {
     const [sorting, setSorting] = useState<SortingState>([])
+    const [selectedRecipe, setSelectedRecipe] = useState<CompatibleRecipe | null>(null)
     const columns = createColumns()
 
     const table = useReactTable({
@@ -147,11 +110,8 @@ export function RecipesTable({ recipes }: RecipesTableProps) {
         columns,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
-        // getPaginationRowModel: getPaginationRowModel(),
         onSortingChange: setSorting,
-        state: {
-            sorting,
-        },
+        state: { sorting },
     })
 
     return (
@@ -159,7 +119,8 @@ export function RecipesTable({ recipes }: RecipesTableProps) {
             <div className="p-4">
                 <h2 className="text-lg font-semibold">Compatible Recipes</h2>
                 <p>Recipes that match your dietary preferences and restrictions</p>
-            </div><div className="rounded-md border">
+            </div>
+            <div className="rounded-md border">
                 <Table>
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
@@ -175,9 +136,16 @@ export function RecipesTable({ recipes }: RecipesTableProps) {
                     <TableBody>
                         {table.getRowModel().rows?.length ? (
                             table.getRowModel().rows.map((row) => (
-                                <TableRow key={row.id} data-state={row.getIsSelected() && "selected"}>
+                                <TableRow
+                                    key={row.id}
+                                    data-state={row.getIsSelected() && "selected"}
+                                    className="cursor-pointer hover:bg-muted transition-colors"
+                                    onClick={() => setSelectedRecipe(row.original)}
+                                >
                                     {row.getVisibleCells().map((cell) => (
-                                        <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                                        <TableCell key={cell.id}>
+                                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                        </TableCell>
                                     ))}
                                 </TableRow>
                             ))
@@ -192,6 +160,16 @@ export function RecipesTable({ recipes }: RecipesTableProps) {
                 </Table>
             </div>
 
+            {/* Modal */}
+            {selectedRecipe && (
+                <RecipeModal
+                    recipe={selectedRecipe.recipe}
+                    ingredients={selectedRecipe.ingredients}
+                    isOpen={!!selectedRecipe}
+                    onClose={() => setSelectedRecipe(null)}
+                />
+            )}
         </div>
     )
 }
+

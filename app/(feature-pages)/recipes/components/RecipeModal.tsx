@@ -1,4 +1,5 @@
 "use client"
+
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import {
@@ -9,9 +10,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
-import { Clock, Users, ChefHat, CookingPot, Utensils, Eye } from "lucide-react"
+import { ChefHat, Clock, CookingPot, Utensils } from "lucide-react"
 import { Ingredients, Recipes } from "@/utils/type"
 import { formatCookingTime } from "@/utils/utils"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -19,16 +18,23 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 type RecipeModalProps = {
   recipe: Recipes;
   ingredients: Ingredients[];
+  isOpen?: boolean; // Allow external control
+  onClose?: () => void; // Callback to close modal
   trigger?: React.ReactNode;
 };
 
-export function RecipeModal({ recipe, ingredients, trigger }: RecipeModalProps) {
-  const defaultTrigger = (
-    <Button variant="default" className="w-full group-hover:bg-primary/90 transition-colors">
-      View Recipe
-    </Button>
-  );
-  
+export function RecipeModal({ recipe, ingredients, isOpen, onClose, trigger }: RecipeModalProps) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isControlled = isOpen !== undefined;
+
+  const handleOpenChange = (open: boolean) => {
+    if (isControlled) {
+      if (!open && onClose) onClose(); // Call onClose when externally controlled
+    } else {
+      setInternalOpen(open);
+    }
+  };
+
   // Nutrition values
   const nutritionData = [
     { label: "Calories", value: recipe.calories_per_serving, unit: "kcal" },
@@ -36,19 +42,15 @@ export function RecipeModal({ recipe, ingredients, trigger }: RecipeModalProps) 
     { label: "Carbs", value: recipe.carbs_per_serving, unit: "g" },
     { label: "Fat", value: recipe.fat_per_serving, unit: "g" },
   ];
-  
+
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        {trigger || defaultTrigger}
-      </DialogTrigger>
+    <Dialog open={isControlled ? isOpen : internalOpen} onOpenChange={handleOpenChange}>
+      {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
       <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-primary">{recipe.title}</DialogTitle>
           {recipe.description && (
-            <DialogDescription className="text-base mt-2">
-              {recipe.description}
-            </DialogDescription>
+            <DialogDescription className="text-base mt-2">{recipe.description}</DialogDescription>
           )}
         </DialogHeader>
 
@@ -72,7 +74,7 @@ export function RecipeModal({ recipe, ingredients, trigger }: RecipeModalProps) 
             <TabsTrigger value="ingredients">Ingredients</TabsTrigger>
             <TabsTrigger value="nutrition">Nutrition</TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="ingredients" className="space-y-4">
             <div>
               <h3 className="font-medium text-lg mb-3 flex items-center">
@@ -91,7 +93,7 @@ export function RecipeModal({ recipe, ingredients, trigger }: RecipeModalProps) 
               </ul>
             </div>
           </TabsContent>
-          
+
           <TabsContent value="nutrition">
             <div className="bg-muted/40 rounded-lg p-4">
               <h3 className="font-medium text-lg mb-4">Nutrition per serving</h3>
@@ -110,5 +112,5 @@ export function RecipeModal({ recipe, ingredients, trigger }: RecipeModalProps) 
         </Tabs>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

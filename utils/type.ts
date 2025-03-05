@@ -7,3 +7,5 @@ export interface RecipeWithIngredients {
   ingredients: Ingredients[];
 }
 export type Diets = Database["public"]["Tables"]["diets"]["Row"];
+
+export type DietType1 = Database["public"]["Tables"]["diets_type_1"]["Row"];

@@ -9,8 +9,15 @@ import MultiSelectCombobox from "./MultiSelect";
 import { Ingredients } from "@/utils/type";
 import { Radio, RotateCcw } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { DietData } from "../page";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
-const preferences = ["Diabetic", "Keto", "Low Protein", "Cardiac", "Low Cholesterol"];
+
 
 export default function FilterSidebar({
   onFilterApply,
@@ -19,7 +26,8 @@ export default function FilterSidebar({
   cookingTimeRange,
   proteinRange,
   fatRange,
-  carbRange
+  carbRange,
+  dietData
 }: {
   onFilterApply: (filters: FilterProps) => void;
   calorieRange: { min: number; max: number };
@@ -28,7 +36,9 @@ export default function FilterSidebar({
   fatRange: { min: number; max: number };
   carbRange: { min: number; max: number };
   ingredients: Ingredients[];
+  dietData: DietData[];
 }) {
+  const preferences = dietData.map((diet) => { return { name: diet.diet_id.diet_name, description: diet.diet_id.description } });
   // Store initial values for reset functionality
   const initialState = {
     calorie: [calorieRange.min, calorieRange.max],
@@ -37,7 +47,8 @@ export default function FilterSidebar({
     fat: [fatRange.min, fatRange.max],
     carb: [carbRange.min, carbRange.max],
     ingredientsToAvoid: [] as number[],
-    ingredientsToInclude: [] as number[]
+    ingredientsToInclude: [] as number[],
+    preference: "" // Add preference to initial state
   };
 
   // Current filter state
@@ -60,7 +71,8 @@ export default function FilterSidebar({
       filters.carb[0] !== initialState.carb[0] ||
       filters.carb[1] !== initialState.carb[1] ||
       filters.ingredientsToAvoid.length > 0 ||
-      filters.ingredientsToInclude.length > 0;
+      filters.ingredientsToInclude.length > 0 ||
+      filters.preference !== ""; // Check if preference is modified
 
     setFiltersModified(isModified);
   }, [filters, initialState]);
@@ -109,13 +121,13 @@ export default function FilterSidebar({
   return (
     <div className="w-full p-4 border rounded-md space-y-4 relative">
       <div className="flex justify-between items-center mb-2">
-        <h1 className="text-lg font-bold">Filter Recipes</h1>
+        <h1 className="text-lg font-bold mt-1">Filter Recipes</h1>
         {filtersModified && (
           <Button
             variant="ghost"
             size="sm"
             onClick={resetFilters}
-            className="flex items-center text-muted-foreground hover:text-foreground"
+            className="flex items-center text-muted-foreground hover:text-foreground "
           >
             <RotateCcw className="mr-1 h-3 w-3" />
             Reset
@@ -130,12 +142,24 @@ export default function FilterSidebar({
           <AccordionContent>
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
-                <RadioGroup>
-                  {preferences.map((preference) => (
-                    <div key={preference} className="flex items-center space-x-2">
-                      <RadioGroupItem value={preference} id={`diet-${preference}`} />
-                      <Label htmlFor={`diet-${preference}`}>{preference}</Label>
-                    </div>
+                <RadioGroup
+                  value={filters.preference}
+                  onValueChange={(value) => updateFilter("preference", value)}
+                >
+                  {preferences.map(({ name, description }) => (
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div key={name} className="flex items-center space-x-2">
+                            <RadioGroupItem value={name} id={`diet-${name}`} />
+                            <Label htmlFor={`diet-${name}`}>{name}</Label>
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-40">
+                          {description}
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   ))}
                 </RadioGroup>
               </div>
@@ -151,17 +175,14 @@ export default function FilterSidebar({
               <h3 className="text-sm font-medium mb-2">Calories</h3>
               {renderSlider("calorie", filters.calorie, calorieRange.min, calorieRange.max, " cal")}
             </div>
-
             <div>
               <h3 className="text-sm font-medium mb-2">Protein</h3>
               {renderSlider("protein", filters.protein, proteinRange.min, proteinRange.max, "g")}
             </div>
-
             <div>
               <h3 className="text-sm font-medium mb-2">Carbs</h3>
               {renderSlider("carb", filters.carb, carbRange.min, carbRange.max, "g")}
             </div>
-
             <div>
               <h3 className="text-sm font-medium mb-2">Fat</h3>
               {renderSlider("fat", filters.fat, fatRange.min, fatRange.max, "g")}
@@ -192,7 +213,6 @@ export default function FilterSidebar({
               placeholder="Ingredients to include..."
             />
           </div>
-
             <div>
               <h3 className="text-sm font-medium mb-2">Avoid These Ingredients</h3>
               <MultiSelectCombobox

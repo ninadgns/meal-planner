@@ -1,18 +1,18 @@
 "use client"
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, Controller } from "react-hook-form";
-import * as z from "zod";
 import { useRouter } from "next/navigation";
+import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner"; // Import Sonner's toast
+import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Form } from "@/components/ui/form";
-import DietaryPreferencesToggle from "./diet-preference";
-import { Diets, Ingredients } from "@/utils/type";
+import { Form, FormDescription, FormItem, FormLabel } from "@/components/ui/form";
 import { createClient } from "@/utils/supabase/client";
+import { Diets, Ingredients } from "@/utils/type";
 import MultiSelectCombobox from "../../recipes/components/MultiSelect";
+import DietaryPreferencesToggle from "./diet-preference";
 
 // Define form schema with dietary preferences and allergies
 const formSchema = z.object({
@@ -102,24 +102,27 @@ export default function UserPreferencesFormClient({
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <DietaryPreferencesToggle control={form.control} dietaryOptions={dietaryOptions} />
-
-            <Controller
-              name="allergies"
-              control={form.control}
-              render={({ field }) => (
-                <MultiSelectCombobox
-                  options={ingredients.map((ingredient) => ({
-                    value: ingredient.ingredient_id.toString(),  // Convert number to string
-                    label: ingredient.name,
-                  }))}
-                  onChange={(values) => field.onChange(values.map(Number))} // Convert strings back to numbers
-                  value={field.value?.map(String)} // Convert numbers to strings
-                  placeholder="Ingredients to avoid..."
-                />
-              )}
-            />
-
-
+            <FormItem>
+              <div className="mb-4">
+                <FormLabel className="text-base">Allergies</FormLabel>
+                <FormDescription>Select ingredients to avoid.</FormDescription>
+              </div>
+              <Controller
+                name="allergies"
+                control={form.control}
+                render={({ field }) => (
+                  <MultiSelectCombobox
+                    options={ingredients.map((ingredient) => ({
+                      value: ingredient.ingredient_id.toString(),  // Convert number to string
+                      label: ingredient.name,
+                    }))}
+                    onChange={(values) => field.onChange(values.map(Number))} // Convert strings back to numbers
+                    value={field.value?.map(String)} // Convert numbers to strings
+                    placeholder="Ingredients to avoid..."
+                  />
+                )}
+              />
+            </FormItem>
             <Button type="submit">Save Preferences</Button>
           </form>
         </Form>
