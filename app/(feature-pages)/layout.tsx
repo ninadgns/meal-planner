@@ -43,9 +43,9 @@ export default function RootLayout({
               <nav className="pl-4 w-full flex justify-center border-b border-b-foreground/10 h-16">
                 <div className="w-full  flex justify-between items-center p-3 px-9 text-sm">
                   <Link className="flex gap-2 font-semibold text-lg" href={"/"}><ChefHat />MealPlanner</Link>
-                  <div className="flex gap-5 align-text-bottom">
-                    <ThemeSwitcher  />
-                    {!hasEnvVars ? <EnvVarWarning /> : <HeaderAuth />}
+                  <div className="flex gap-2 items-center">
+                    <ThemeSwitcher  /> 
+                    <HeaderAuth />
                   </div>
                 </div>
               </nav>

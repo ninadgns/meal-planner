@@ -1,13 +1,10 @@
-import DeployButton from "@/components/deploy-button";
-import { EnvVarWarning } from "@/components/env-var-warning";
 import HeaderAuth from "@/components/header-auth";
 import { ThemeSwitcher } from "@/components/theme-switcher";
-import { hasEnvVars } from "@/utils/supabase/check-env-vars";
-import { Geist } from "next/font/google";
+import { ChefHat } from "lucide-react";
 import { ThemeProvider } from "next-themes";
+import { Geist } from "next/font/google";
 import Link from "next/link";
 import "../globals.css";
-import { ChefHat } from "lucide-react";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -43,7 +40,8 @@ export default function RootLayout({
               <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
                 <div className="w-full max-w-5xl flex justify-between items-center p-3 px-5 text-sm ">
                   <Link className="flex gap-2 items-center font-semibold" href={"/"}><ChefHat />MealPlanner</Link>
-                  {!hasEnvVars ? <EnvVarWarning /> : <HeaderAuth />}
+                  <ThemeSwitcher />
+                  <HeaderAuth />
                 </div>
               </nav>
 
