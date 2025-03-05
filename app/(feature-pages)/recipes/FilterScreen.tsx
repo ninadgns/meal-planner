@@ -147,7 +147,7 @@ const FilterScreen = ({ recipeWithIngredients }: { recipeWithIngredients: Recipe
               {filteredRecipes.length} out of {recipeWithIngredients.length} total recipes
             </div>
             <div className="flex gap-5">
-              <DropdownMenu>
+              {view == 'grid' && <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline">
                     Sort By {sortCriteria ? `: ${getSortCriteriaDisplayName(sortCriteria)}` : ""}
@@ -161,7 +161,7 @@ const FilterScreen = ({ recipeWithIngredients }: { recipeWithIngredients: Recipe
                   <DropdownMenuItem onClick={() => handleSort("carbs_per_serving")}>Carbs</DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleSort("fat_per_serving")}>Fat</DropdownMenuItem>
                 </DropdownMenuContent>
-              </DropdownMenu>
+              </DropdownMenu>}
               <ViewSwitcher view={view} onViewChange={setView} />
             </div>
           </div>
