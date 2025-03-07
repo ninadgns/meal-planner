@@ -35,7 +35,6 @@ export function DietSidebar({ diets, allergies }: DietSidebarProps) {
                         {allergies.map((allergy) => (
                             <li key={allergy.ingredient.ingredient_id} className="p-2 border rounded">
                                 {allergy.ingredient.name}
-                                <p className="text-sm">{allergy.severity}</p>
                             </li>
                         ))}
                     </ul>

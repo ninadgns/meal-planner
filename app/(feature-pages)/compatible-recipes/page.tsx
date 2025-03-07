@@ -20,7 +20,6 @@ export type userAllergy = {
     ingredient_id: number;
     name: string;
   };
-  severity: string | null;
 };
 
 export default async function CompatibleRecipesPage() {
@@ -57,7 +56,7 @@ export default async function CompatibleRecipesPage() {
 
     const { data: allergyData, error: allergyError } = await supabase
       .from("user_allergies")
-      .select(`ingredient:ingredient_id(*), severity`)
+      .select(`ingredient:ingredient_id(*)`)
       .eq("user_id", user.id);
 
     const diets: Diets[] = dietData?.map((item) => item.diets as Diets) || [];
