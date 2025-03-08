@@ -18,7 +18,7 @@ interface TableContainerProps {
     dietUser: DietUser[]
 }
 
-export function TableContainer({dietUser, allergySafeIngredients, recipeWithDiets, userDietAllergyData }: TableContainerProps) {
+export function AdminDashboardContainer({dietUser, allergySafeIngredients, recipeWithDiets, userDietAllergyData }: TableContainerProps) {
     const allergyRef = useRef<HTMLDivElement>(null)
     const recipeDietRef = useRef<HTMLDivElement>(null)
     const chartRef = useRef<HTMLDivElement>(null)

@@ -9,9 +9,15 @@ export interface RecipeWithIngredients {
 }
 export interface RecipeWithIngredientsAndSteps {
   recipe: Recipes;
-  ingredients: Ingredients[];
+  ingredients: {
+    ingredient: Ingredients;
+    quantity_per_serving: number | null;
+    unit: string | null;
+  }[];
   steps: Recipe_Directions[];
 }
+
+export type RecipeIngredients = Database["public"]["Tables"]["recipe_ingredients"]["Row"];
 export type Diets = Database["public"]["Tables"]["diets"]["Row"];
 export type Recipe_Directions = Database["public"]["Tables"]["recipe_directions"]["Row"];
 export type DietType1 = Database["public"]["Tables"]["diets_type_1"]["Row"];

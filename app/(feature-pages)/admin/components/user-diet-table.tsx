@@ -32,7 +32,7 @@ export default function UserDietAllergyTable({ userdietallergydata }: { userdiet
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6 mt-10">
       <div>
         <h2 className="text-2xl font-bold mb-4">User Diet and Allergy Information</h2>
       </div>

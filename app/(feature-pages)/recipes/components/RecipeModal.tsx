@@ -17,7 +17,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 type RecipeModalProps = {
   recipe: Recipes;
-  ingredients: Ingredients[];
+  ingredients: {
+    ingredient: Ingredients;
+    quantity_per_serving: number | null;
+    unit: string | null;
+  }[];
   steps?: Recipe_Directions[]; // Made steps optional
   isOpen?: boolean; // Allow external control
   onClose?: () => void; // Callback to close modal
@@ -88,11 +92,19 @@ export function RecipeModal({ recipe, ingredients, isOpen, onClose, trigger, ste
                 </span>
                 Ingredients
               </h3>
-              <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2 pl-4">
-                {ingredients.map((ingredient, index) => (
-                  <li key={index} className="text-sm flex items-center">
-                    <span className="w-1.5 h-1.5 bg-primary/80 rounded-full mr-2"></span>
-                    {ingredient.name}
+              <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-3 pl-4">
+                {ingredients.map((item, index) => (
+                  <li key={index} className="text-sm flex items-start group hover:bg-muted/30 p-1.5 rounded-md transition-colors">
+                    <span className="w-2 h-2 bg-primary/80 rounded-full mr-2 mt-1.5 flex-shrink-0"></span>
+                    <span className="flex flex-wrap items-center">
+                      <span className="font-medium">{item.ingredient.name}</span>
+                      {item.quantity_per_serving && item.unit && (
+                        <>
+                          <span className="mx-1.5 text-muted-foreground inline-flex items-center">•</span>
+                          <span className="text-muted-foreground">{item.quantity_per_serving} {item.unit}</span>
+                        </>
+                      )}
+                    </span>
                   </li>
                 ))}
               </ul>

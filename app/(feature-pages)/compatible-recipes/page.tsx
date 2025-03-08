@@ -7,12 +7,17 @@ import { DietSidebar } from "./components/dietSidebar"
 
 export type CompatibleRecipe = {
   recipe: Recipes;
-  ingredients: Ingredients[]; // Now included
+  ingredients: {
+    ingredient: Ingredients;
+    quantity_per_serving: number | null;
+    unit: string | null;
+  }[]; // Updated ingredient structure
   steps: Recipe_Directions[]
   allergy_safe: boolean;
   nutritional_compliant: boolean;
   categorical_compliant: boolean;
-  fully_compliant: boolean; // New attribute
+  fully_compliant: boolean;
+  compliance_count?: number; // Make this optional since it's calculated
 };
 
 export type userAllergy = {
@@ -82,9 +87,10 @@ export default async function CompatibleRecipesPage() {
     }
 
     // Fetch detailed recipe ingredients
+    // Fetch detailed recipe ingredients with quantity and unit
     const { data: recipeDetails, error: recipeDetailsError } = await supabase
       .from("recipe_ingredients")
-      .select("recipe:recipe_id(*), ingredients:ingredient_id(*)")
+      .select("recipe_id, ingredient_id, quantity_per_serving, unit, recipe:recipe_id(*), ingredients:ingredient_id(*)")
       .in("recipe_id", recipesData.map((recipe) => recipe.recipe_id));
 
     if (recipeDetailsError) {
@@ -98,17 +104,22 @@ export default async function CompatibleRecipesPage() {
 
 
     // Map recipesData to CompatibleRecipe[]
+    // Map recipesData to CompatibleRecipe[]
     const recipes: CompatibleRecipe[] = recipesData.map((recipe) => {
       // Find the matching recipe details
-      const detailedRecipe = recipeDetails?.filter(
-        (r) => r.recipe.recipe_id === recipe.recipe_id
+      const detailedIngredients = recipeDetails?.filter(
+        (r) => r.recipe_id === recipe.recipe_id
       );
 
       return {
-        recipe: detailedRecipe?.[0]?.recipe as Recipes, // Ensure correct typing
-        ingredients: detailedRecipe?.map((r) => r.ingredients) || [], // Extract ingredients properly
-        allergy_safe: recipe.allergy_safe,
+        recipe: detailedIngredients?.[0]?.recipe as Recipes,
+        ingredients: detailedIngredients?.map((r) => ({
+          ingredient: r.ingredients,
+          quantity_per_serving: r.quantity_per_serving,
+          unit: r.unit
+        })) || [],
         steps: stepsData?.filter((step) => step.recipe_id === recipe.recipe_id),
+        allergy_safe: recipe.allergy_safe,
         nutritional_compliant: recipe.nutritional_compliant,
         categorical_compliant: recipe.categorical_compliant,
         fully_compliant:

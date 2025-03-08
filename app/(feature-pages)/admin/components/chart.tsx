@@ -1,6 +1,6 @@
 "use client"
 
-import { Bar, BarChart, CartesianGrid, XAxis } from "recharts"
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
 
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { DietUser } from "../page"
@@ -21,9 +21,9 @@ const chartConfig = {
 export function UserToDietChart({ chartData }: { chartData: DietUser[] }) {
 
     return (
-        <div className="max-w-4xl mx-auto space-y-6">
+        <div className="max-w-4xl mx-auto space-y-6 mt-10">
             <h2 className="text-xl font-bold mb-4">Users following each diet</h2>
-            <ChartContainer config={chartConfig} className="aspect-auto h-[250px] w-4/5 mx-auto">
+            <ChartContainer config={chartConfig} className="aspect-auto h-[250px] mx-auto">
                 <BarChart accessibilityLayer data={chartData}>
                     <ChartTooltip
                         content={
@@ -34,7 +34,17 @@ export function UserToDietChart({ chartData }: { chartData: DietUser[] }) {
                         }
                     />
                     <CartesianGrid vertical={false} />
-                    <Bar dataKey="follower_count"  barSize={60} fill="hsl(var(--chart-2)" radius={3} />
+                    <Bar dataKey="follower_count" barSize={60} fill="hsl(var(--chart-2)" radius={3} />
+                    <YAxis
+                        tickLine={false}
+                        axisLine={false}
+                        tickMargin={8}
+                        domain={[0, 'dataMax']} // Ensures it starts at 0 and adjusts dynamically
+                        tickCount={5} // Adjust as needed to get integer values
+                        allowDecimals={false} // Ensures only whole numbers appear
+                        tickFormatter={(value) => value}
+                    />
+
                     <XAxis
                         dataKey="diet_name"
                         tickLine={false}

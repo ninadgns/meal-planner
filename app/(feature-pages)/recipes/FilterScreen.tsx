@@ -56,9 +56,12 @@ const FilterScreen = ({ recipeWithIngredients, dietData }: { recipeWithIngredien
   }), [recipeWithIngredients]);
 
   const uniqueIngredients = useMemo(() => {
-    const allIngredients = recipeWithIngredients.flatMap(({ ingredients }) => ingredients);
+    // Access the ingredient property from each item in the ingredients array
+    const allIngredients = recipeWithIngredients.flatMap(({ ingredients }) =>
+      ingredients.map(item => item.ingredient)
+    );
     return Array.from(
-      new Map(allIngredients.map((ingredient) => [ingredient.name, ingredient])).values()
+      new Map(allIngredients.map((ingredient) => [ingredient.ingredient_id, ingredient])).values()
     );
   }, [recipeWithIngredients]);
 
@@ -131,13 +134,15 @@ const FilterScreen = ({ recipeWithIngredients, dietData }: { recipeWithIngredien
 
       // Filter by ingredients to avoid
       const matchesIngredientAvoidance = filters.ingredientsToAvoid.length === 0 ||
-        !ingredients.some(ingredient => filters.ingredientsToAvoid.includes(ingredient.ingredient_id));
+        !ingredients.some(item => filters.ingredientsToAvoid.includes(item.ingredient.ingredient_id));
+
 
       // Filter by ingredients to include
       const matchesIngredientInclusion = filters.ingredientsToInclude.length === 0 ||
-        filters.ingredientsToInclude.every(ingredientId =>
-          ingredients.some(ingredient => ingredient.ingredient_id === ingredientId)
+        filters.ingredientsToInclude.some(ingredientId =>
+          ingredients.some(item => item.ingredient.ingredient_id === ingredientId)
         );
+
 
       // Filter by diet preference
       let matchesDietPreference = true;
