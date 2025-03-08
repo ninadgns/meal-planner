@@ -14,15 +14,18 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { useRouter } from "next/navigation"
 
 interface AppSidebarProps {
   scrollToAllergy: () => void
   scrollToRecipeDiet: () => void
   scrollToUserDietAllergyTable: () => void
   scrollToChart: () => void
+  scrollToView: () => void
 }
 
-export function AppSidebar({ scrollToUserDietAllergyTable, scrollToAllergy, scrollToRecipeDiet, scrollToChart }: AppSidebarProps) {
+export function AppSidebar({ scrollToUserDietAllergyTable, scrollToAllergy, scrollToRecipeDiet, scrollToChart, scrollToView }: AppSidebarProps) {
+  const router = useRouter();
   return (
     <Sidebar>
       <SidebarHeader>
@@ -67,6 +70,18 @@ export function AppSidebar({ scrollToUserDietAllergyTable, scrollToAllergy, scro
                 <SidebarMenuButton onClick={scrollToAllergy}>
                   <Receipt className="size-4" />
                   <span>Allergy Safe Ingredients</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton onClick={scrollToView}>
+                  <Receipt className="size-4" />
+                  <span>Views</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton onClick={() => { router.push("/admin/create-recipe") }}>
+                  <Receipt className="size-4" />
+                  <span>Create Recipe</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>

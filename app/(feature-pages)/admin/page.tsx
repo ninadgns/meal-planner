@@ -25,6 +25,13 @@ export interface DietUser {
     follower_count: number;
 }
 
+export interface userRecipe {
+    recipe_id: number | null;
+    title: string | null;
+    user_id: string | null;
+    user_name: string | null;
+}
+
 export default async function TablesPage() {
     const supabase = await createClient();
 
@@ -123,8 +130,13 @@ export default async function TablesPage() {
 
     // console.log("Processed Data:", processedDietUser);
 
-    
 
+    const { data: view1DataMaybeNull, error: view1Error } = await supabase.from("user_allergy_safe_recipes").select("*");
+    const { data: view2DataMaybeNull, error: view2Error } = await supabase.from("user_nutritional_diet_recipes").select("*");
+    const { data: view3DataMaybeNull, error: view3Error } = await supabase.from("user_categorical_diet_recipes").select("*")
+    const view1Data = view1DataMaybeNull || [];
+    const view2Data = view2DataMaybeNull || [];
+    const view3Data = view3DataMaybeNull || [];
     return (
         <SidebarProvider>
             <AdminDashboardContainer
@@ -132,6 +144,10 @@ export default async function TablesPage() {
                 recipeWithDiets={recipeWithDiets}
                 userDietAllergyData={userDietAllergyData}
                 dietUser={processedDietUser}
+                view1Data={view1Data}
+                view2Data={view2Data}
+                view3Data={view3Data}
+                
             />
         </SidebarProvider>
     );

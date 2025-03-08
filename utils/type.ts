@@ -17,6 +17,7 @@ export interface RecipeWithIngredientsAndSteps {
   steps: Recipe_Directions[];
 }
 
+export type Category = Database["public"]["Tables"]["categories"]["Row"];
 export type RecipeIngredients = Database["public"]["Tables"]["recipe_ingredients"]["Row"];
 export type Diets = Database["public"]["Tables"]["diets"]["Row"];
 export type Recipe_Directions = Database["public"]["Tables"]["recipe_directions"]["Row"];

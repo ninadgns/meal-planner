@@ -316,56 +316,6 @@ export type Database = {
         }
         Relationships: []
       }
-      steps: {
-        Row: {
-          description: string
-          recipe_id: number
-          step_number: number
-          time: number | null
-        }
-        Insert: {
-          description: string
-          recipe_id: number
-          step_number: number
-          time?: number | null
-        }
-        Update: {
-          description?: string
-          recipe_id?: number
-          step_number?: number
-          time?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "steps_recipe_id_fkey"
-            columns: ["recipe_id"]
-            isOneToOne: false
-            referencedRelation: "recipes"
-            referencedColumns: ["recipe_id"]
-          },
-          {
-            foreignKeyName: "steps_recipe_id_fkey"
-            columns: ["recipe_id"]
-            isOneToOne: false
-            referencedRelation: "user_allergy_safe_recipes"
-            referencedColumns: ["recipe_id"]
-          },
-          {
-            foreignKeyName: "steps_recipe_id_fkey"
-            columns: ["recipe_id"]
-            isOneToOne: false
-            referencedRelation: "user_categorical_diet_recipes"
-            referencedColumns: ["recipe_id"]
-          },
-          {
-            foreignKeyName: "steps_recipe_id_fkey"
-            columns: ["recipe_id"]
-            isOneToOne: false
-            referencedRelation: "user_nutritional_diet_recipes"
-            referencedColumns: ["recipe_id"]
-          },
-        ]
-      }
       user_allergies: {
         Row: {
           ingredient_id: number
