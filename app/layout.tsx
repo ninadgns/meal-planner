@@ -10,8 +10,8 @@ import { Toaster } from "@/components/ui/sonner"
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'MealPlanner - Your Personal Meal Planning Assistant',
-  description: 'Plan your meals, generate shopping lists, and discover new recipes with MealPlanner.',
+  title: 'NutriCulinary System',
+  description: 'Plan your meals, curate on nutritions, and discover new recipes with NutriCulinary.',
 }
 
 export default function RootLayout({

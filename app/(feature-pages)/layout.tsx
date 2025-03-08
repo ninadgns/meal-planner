@@ -42,7 +42,7 @@ export default function RootLayout({
             <div className="flex-1 w-full flex flex-col items-center">
               <nav className="pl-4 w-full flex justify-center border-b border-b-foreground/10 h-16">
                 <div className="w-full  flex justify-between items-center p-3 px-9 text-sm">
-                  <Link className="flex gap-2 font-semibold text-lg" href={"/"}><ChefHat />MealPlanner</Link>
+                  <Link className="flex gap-2 font-semibold text-lg" href={"/"}><ChefHat />NutriCulinary</Link>
                   <div className="flex gap-2 items-center">
                     <ThemeSwitcher  /> 
                     <HeaderAuth />
