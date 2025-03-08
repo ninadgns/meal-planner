@@ -146,7 +146,7 @@ export default async function CompatibleRecipesPage() {
     // Layout with sidebar
     return (
       <SidebarProvider>
-        <div className="flex h-screen">
+        <div className="flex gap-5 h-screen">
           <DietSidebar diets={diets} allergies={allergies} />
           <div className="overflow-y-auto h-screen">
             <RecipesTable recipes={recipes} />

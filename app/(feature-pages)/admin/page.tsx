@@ -137,6 +137,9 @@ export default async function TablesPage() {
     const view1Data = view1DataMaybeNull || [];
     const view2Data = view2DataMaybeNull || [];
     const view3Data = view3DataMaybeNull || [];
+    const {data: allRecipeMaybeNull, error: allRecipeError} = await supabase.from("recipes").select("*");
+    const allRecipes = allRecipeMaybeNull || [];
+
     return (
         <SidebarProvider>
             <AdminDashboardContainer
@@ -147,6 +150,7 @@ export default async function TablesPage() {
                 view1Data={view1Data}
                 view2Data={view2Data}
                 view3Data={view3Data}
+                allRecipe={allRecipes}
                 
             />
         </SidebarProvider>

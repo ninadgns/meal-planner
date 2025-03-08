@@ -1,5 +1,6 @@
 import { Database } from "./supabase/dbTypes";
 
+export type User = Database["public"]["Tables"]["users"]["Row"];
 export type Recipes = Database["public"]["Tables"]["recipes"]["Row"];
 export type Ingredients = Database["public"]["Tables"]["ingredients"]["Row"];
 export type AllTables = Database["public"]["Tables"];
@@ -16,6 +17,7 @@ export interface RecipeWithIngredientsAndSteps {
   }[];
   steps: Recipe_Directions[];
 }
+
 
 export type Category = Database["public"]["Tables"]["categories"]["Row"];
 export type RecipeIngredients = Database["public"]["Tables"]["recipe_ingredients"]["Row"];

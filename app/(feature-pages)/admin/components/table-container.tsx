@@ -21,6 +21,7 @@ import {
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
+import { Recipes } from "@/utils/type"
 interface TableContainerProps {
     allergySafeIngredients: AllergySafeIngredientsProps
     recipeWithDiets: RecipesWithDietsProps
@@ -29,16 +30,18 @@ interface TableContainerProps {
     view1Data: userRecipe[]
     view2Data: userRecipe[]
     view3Data: userRecipe[]
+    allRecipe: Recipes[]
 }
 
-export function AdminDashboardContainer({ dietUser, allergySafeIngredients, recipeWithDiets, userDietAllergyData, view1Data, view2Data, view3Data }: TableContainerProps) {
+export function AdminDashboardContainer({ dietUser, allergySafeIngredients, recipeWithDiets, userDietAllergyData, view1Data, view2Data, view3Data, allRecipe }: TableContainerProps) {
     const allergyRef = useRef<HTMLDivElement>(null)
     const recipeDietRef = useRef<HTMLDivElement>(null)
     const chartRef = useRef<HTMLDivElement>(null)
     const userDietAllergyTableRef = useRef<HTMLDivElement>(null)
     const viewRef = useRef<HTMLDivElement>(null)
+    const scrollToDelete = useRef<HTMLDivElement>(null)
 
-    const scrollToTable = (ref: React.RefObject<HTMLDivElement | null>) => {
+    const scrollToRef = (ref: React.RefObject<HTMLDivElement | null>) => {
         if (ref.current) {
             ref.current.scrollIntoView({ behavior: "smooth" })
         }
@@ -48,16 +51,17 @@ export function AdminDashboardContainer({ dietUser, allergySafeIngredients, reci
     return (
         <>
             <AppSidebar
-                scrollToAllergy={() => scrollToTable(allergyRef)}
-                scrollToRecipeDiet={() => scrollToTable(recipeDietRef)}
-                scrollToChart={() => scrollToTable(chartRef)}
-                scrollToUserDietAllergyTable={() => scrollToTable(userDietAllergyTableRef)}
-                scrollToView={() => scrollToTable(viewRef)}
+                scrollToAllergy={() => scrollToRef(allergyRef)}
+                scrollToRecipeDiet={() => scrollToRef(recipeDietRef)}
+                scrollToChart={() => scrollToRef(chartRef)}
+                scrollToUserDietAllergyTable={() => scrollToRef(userDietAllergyTableRef)}
+                scrollToView={() => scrollToRef(viewRef)}
+                scrollToDelete={() => scrollToRef(scrollToDelete)}
             />
             <SidebarInset>
                 <div className="flex flex-col p-6 gap-8">
                     <h1 className="text-3xl font-bold mx-auto border-b border-black">Admin Dashboard</h1>
-                    
+
                     <div ref={recipeDietRef}>
                         <RecipesWithDiets recipesWithDiets={recipeWithDiets.recipesWithDiets} />
                     </div>
@@ -107,6 +111,7 @@ export function AdminDashboardContainer({ dietUser, allergySafeIngredients, reci
                             </DialogContent>
                         </Dialog>
                     </div>
+
 
                 </div>
             </SidebarInset>

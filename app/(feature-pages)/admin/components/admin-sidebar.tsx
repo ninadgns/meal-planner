@@ -22,9 +22,10 @@ interface AppSidebarProps {
   scrollToUserDietAllergyTable: () => void
   scrollToChart: () => void
   scrollToView: () => void
+  scrollToDelete: () => void
 }
 
-export function AppSidebar({ scrollToUserDietAllergyTable, scrollToAllergy, scrollToRecipeDiet, scrollToChart, scrollToView }: AppSidebarProps) {
+export function AppSidebar({ scrollToUserDietAllergyTable, scrollToAllergy, scrollToRecipeDiet, scrollToChart, scrollToView, scrollToDelete }: AppSidebarProps) {
   const router = useRouter();
   return (
     <Sidebar>
@@ -75,13 +76,19 @@ export function AppSidebar({ scrollToUserDietAllergyTable, scrollToAllergy, scro
               <SidebarMenuItem>
                 <SidebarMenuButton onClick={scrollToView}>
                   <Receipt className="size-4" />
-                  <span>Views</span>
+                  <span>Database Views</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton onClick={() => { router.push("/admin/create-recipe") }}>
                   <Receipt className="size-4" />
                   <span>Create Recipe</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton onClick={()=>{router.push("/admin/delete-recipe")}}>
+                  <Receipt className="size-4" />
+                  <span>Delete Recipe</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>

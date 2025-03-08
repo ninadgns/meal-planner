@@ -135,3 +135,17 @@ export const signOutAction = async () => {
   await supabase.auth.signOut();
   return redirect("/sign-in");
 };
+
+
+export const deleteAccountAction = async () => {
+  const supabase = await createClient();
+  const user = await supabase.auth.getUser();
+  if (!user) {
+    return encodedRedirect("error", "/preferences", "User not found");
+  }
+  const { error } = await supabase.auth.admin.deleteUser(user.data.user?.id||"");
+  if (error) {
+    return encodedRedirect("error", "/preferences", "Could not delete account");
+  }
+  return redirect("/sign-in");
+}

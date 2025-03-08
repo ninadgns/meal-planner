@@ -1,4 +1,4 @@
-import { signOutAction } from "@/app/actions";
+import { deleteAccountAction, signOutAction } from "@/app/actions";
 import { hasEnvVars } from "@/utils/supabase/check-env-vars";
 import Link from "next/link";
 import { Badge } from "./ui/badge";
@@ -65,6 +65,13 @@ export default async function AuthButton() {
           <form action={signOutAction}>
             <Button type="submit" variant="destructive" className="w-full text-left">
               Sign out
+            </Button>
+          </form>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <form action={deleteAccountAction}>
+            <Button type="submit" variant="destructive" className="w-full text-left">
+              Delete Account
             </Button>
           </form>
         </DropdownMenuItem>
