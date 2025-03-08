@@ -26,7 +26,7 @@ export default async function UserPreferencesPage() {
   }
   const dietaryOptions = dietaryOptionsMaybeNull || [];
   const userDietaryPreferences = userDiets?.map((item) => item.diet_id) || [];
-  console.log(userDietaryPreferences);
+  // console.log(userDietaryPreferences);
   const userAllergiesList = userAllergies?.map((item) => item.ingredient_id) || [];
 
   return <UserPreferencesFormClient dietaryOptions={dietaryOptions} userdiets={userDietaryPreferences} userAllergies = {userAllergiesList} ingredients={ingredients}/>;

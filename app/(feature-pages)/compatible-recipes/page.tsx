@@ -1,6 +1,6 @@
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { createClient } from "@/utils/supabase/server"
-import { Diets, Ingredients, Recipes } from "@/utils/type"
+import { Diets, Ingredients, Recipe_Directions, Recipes } from "@/utils/type"
 import { RecipesErrorState } from "./components/recipeTableError"
 import { RecipesTable } from "./components/compatibleRecipeTable"
 import { DietSidebar } from "./components/dietSidebar"
@@ -8,6 +8,7 @@ import { DietSidebar } from "./components/dietSidebar"
 export type CompatibleRecipe = {
   recipe: Recipes;
   ingredients: Ingredients[]; // Now included
+  steps: Recipe_Directions[]
   allergy_safe: boolean;
   nutritional_compliant: boolean;
   categorical_compliant: boolean;
@@ -91,6 +92,11 @@ export default async function CompatibleRecipesPage() {
       return <RecipesTable recipes={[]} />;
     }
 
+    const { data: stepsDataMaybeNull, error: stepsError } = await supabase
+      .from("recipe_directions").select("*").in("recipe_id", recipesData.map((recipe) => recipe.recipe_id));
+    const stepsData = stepsDataMaybeNull || [];
+
+
     // Map recipesData to CompatibleRecipe[]
     const recipes: CompatibleRecipe[] = recipesData.map((recipe) => {
       // Find the matching recipe details
@@ -102,6 +108,7 @@ export default async function CompatibleRecipesPage() {
         recipe: detailedRecipe?.[0]?.recipe as Recipes, // Ensure correct typing
         ingredients: detailedRecipe?.map((r) => r.ingredients) || [], // Extract ingredients properly
         allergy_safe: recipe.allergy_safe,
+        steps: stepsData?.filter((step) => step.recipe_id === recipe.recipe_id),
         nutritional_compliant: recipe.nutritional_compliant,
         categorical_compliant: recipe.categorical_compliant,
         fully_compliant:

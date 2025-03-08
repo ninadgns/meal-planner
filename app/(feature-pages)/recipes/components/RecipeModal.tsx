@@ -10,20 +10,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { ChefHat, Clock, CookingPot, Utensils } from "lucide-react"
-import { Ingredients, Recipes } from "@/utils/type"
+import { ChefHat, Clock, CookingPot, ListOrdered, Utensils } from "lucide-react"
+import { Ingredients, Recipe_Directions, Recipes } from "@/utils/type"
 import { formatCookingTime } from "@/utils/utils"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 type RecipeModalProps = {
   recipe: Recipes;
   ingredients: Ingredients[];
+  steps?: Recipe_Directions[]; // Made steps optional
   isOpen?: boolean; // Allow external control
   onClose?: () => void; // Callback to close modal
   trigger?: React.ReactNode;
 };
 
-export function RecipeModal({ recipe, ingredients, isOpen, onClose, trigger }: RecipeModalProps) {
+export function RecipeModal({ recipe, ingredients, isOpen, onClose, trigger, steps = [] }: RecipeModalProps) {
   const [internalOpen, setInternalOpen] = useState(false);
   const isControlled = isOpen !== undefined;
 
@@ -42,6 +43,9 @@ export function RecipeModal({ recipe, ingredients, isOpen, onClose, trigger }: R
     { label: "Carbs", value: recipe.carbs_per_serving, unit: "g" },
     { label: "Fat", value: recipe.fat_per_serving, unit: "g" },
   ];
+
+  // Determine if steps should be shown
+  const hasSteps = steps && steps.length > 0;
 
   return (
     <Dialog open={isControlled ? isOpen : internalOpen} onOpenChange={handleOpenChange}>
@@ -70,8 +74,9 @@ export function RecipeModal({ recipe, ingredients, isOpen, onClose, trigger }: R
         </div>
 
         <Tabs defaultValue="ingredients" className="w-full">
-          <TabsList className="grid grid-cols-2 mb-4">
+          <TabsList className={`grid ${hasSteps ? 'grid-cols-3' : 'grid-cols-2'} mb-4`}>
             <TabsTrigger value="ingredients">Ingredients</TabsTrigger>
+            {hasSteps && <TabsTrigger value="steps">Cooking Instructions</TabsTrigger>}
             <TabsTrigger value="nutrition">Nutrition</TabsTrigger>
           </TabsList>
 
@@ -93,6 +98,37 @@ export function RecipeModal({ recipe, ingredients, isOpen, onClose, trigger }: R
               </ul>
             </div>
           </TabsContent>
+
+          {hasSteps && (
+            <TabsContent value="steps" className="space-y-4">
+              <div>
+                <h3 className="font-medium text-lg mb-3 flex items-center">
+                  <span className="bg-primary/10 w-6 h-6 inline-flex items-center justify-center rounded-full mr-2 text-primary">
+                    <ListOrdered className="h-3.5 w-3.5" />
+                  </span>
+                  Instructions
+                </h3>
+                <ol className="space-y-4 pl-4">
+                  {steps.map((step, index) => (
+                    <li key={index} className="pb-3 border-b border-border/50 last:border-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="bg-primary text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium">
+                          {step.step_order}
+                        </span>
+                        {step.time_duration_minutes && (
+                          <span className="text-xs bg-muted px-2 py-0.5 rounded-full flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            {step.time_duration_minutes} min
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm mt-1">{step.step_description}</p>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </TabsContent>
+          )}
 
           <TabsContent value="nutrition">
             <div className="bg-muted/40 rounded-lg p-4">

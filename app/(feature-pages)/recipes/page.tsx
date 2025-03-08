@@ -1,5 +1,5 @@
 import { createClient } from "@/utils/supabase/client";
-import { Ingredients, Recipes, RecipeWithIngredients } from "@/utils/type";
+import { Ingredients, Recipes, RecipeWithIngredientsAndSteps } from "@/utils/type";
 import FilterScreen from "./FilterScreen";
 
 export type DietData = {
@@ -20,38 +20,79 @@ export type DietData = {
 }
 
 export default async function ProductPage() {
-
-  //This part fetches all the recipes and sends them to the FilterScreen component
   const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("recipe_ingredients")
-    .select("recipe:recipe_id(*), ingredients(*)");
-
-  if (error) {
-    console.error("Error fetching recipes with ingredients:", error);
-    return {};
+  
+  // Fetch all necessary data in parallel
+  const [
+    recipeIngredientsResult,
+    stepsResult,
+    dietsResult
+  ] = await Promise.all([
+    supabase.from("recipe_ingredients").select("recipe:recipe_id(*), ingredients(*)"),
+    supabase.from("recipe_directions").select("*"),
+    supabase.from('diets_type_1').select('diet_id(*), per_meal_calorie_max, per_meal_calorie_min, per_meal_carbs_max, per_meal_carbs_min, per_meal_fat_max, per_meal_fat_min, per_meal_protein_max, per_meal_protein_min')
+  ]);
+  
+  // Handle errors
+  if (recipeIngredientsResult.error) {
+    console.error("Error fetching recipes with ingredients:", recipeIngredientsResult.error);
+    return <div>Error loading recipes. Please try again later.</div>;
   }
-  const recipeData: Record<string, RecipeWithIngredients> = {};
-  data.forEach(({ recipe, ingredients }: { recipe: Recipes, ingredients: Ingredients }) => {
-    if (!recipeData[recipe.recipe_id]) {
-      recipeData[recipe.recipe_id] = { recipe, ingredients: [] };
-    }
-    recipeData[recipe.recipe_id].ingredients.push(ingredients);
-  });
-
-  const { data: DietData, error: DietError } = await supabase.from('diets_type_1').select('diet_id(*), per_meal_calorie_max,per_meal_calorie_min,per_meal_carbs_max,per_meal_carbs_min,per_meal_fat_max,per_meal_fat_min,per_meal_protein_max,per_meal_protein_min');
-
-
-
-
-  if (DietError) {
-    console.error("Error fetching diets:", DietError);
-    return {};
+  
+  if (stepsResult.error) {
+    console.error("Error fetching recipe steps:", stepsResult.error);
+    return <div>Error loading recipe steps. Please try again later.</div>;
   }
-  const diets = DietData || [];
+  
+  if (dietsResult.error) {
+    console.error("Error fetching diets:", dietsResult.error);
+    return <div>Error loading diet information. Please try again later.</div>;
+  }
+  
+  // Process recipe data
+  const recipes = processRecipeData(recipeIngredientsResult.data, stepsResult.data);
+  
   return (
-    <FilterScreen dietData={diets} recipeWithIngredients={Object.values(recipeData)} />
-
-  )
+    <FilterScreen 
+      dietData={dietsResult.data || []} 
+      recipeWithIngredients={recipes} 
+    />
+  );
 }
 
+/**
+ * Process recipe data by combining ingredients and steps
+ */
+function processRecipeData(
+  recipeIngredients: { recipe: Recipes; ingredients: Ingredients }[],
+  steps: any[]
+): RecipeWithIngredientsAndSteps[] {
+  // Group ingredients by recipe_id
+  const recipesMap = new Map<number, RecipeWithIngredientsAndSteps>();
+  
+  // First pass: create recipes with ingredients
+  recipeIngredients.forEach(({ recipe, ingredients }) => {
+    if (!recipesMap.has(recipe.recipe_id)) {
+      recipesMap.set(recipe.recipe_id, { recipe, ingredients: [], steps: [] });
+    }
+    recipesMap.get(recipe.recipe_id)!.ingredients.push(ingredients);
+  });
+  
+  // Second pass: add steps to recipes
+  steps.forEach((step) => {
+    const recipe = recipesMap.get(step.recipe_id);
+    if (recipe) {
+      recipe.steps.push(step);
+    }
+  });
+  
+  // Sort steps and convert to array
+  const recipeArray = Array.from(recipesMap.values());
+  recipeArray.forEach(recipe => {
+    recipe.steps.sort((a, b) => a.step_order - b.step_order);
+  });
+
+  // console.log(recipeArray);
+  
+  return recipeArray;
+}

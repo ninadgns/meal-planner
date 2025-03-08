@@ -1,5 +1,5 @@
 "use client"
-import { RecipeWithIngredients } from "@/utils/type"
+import {  RecipeWithIngredientsAndSteps } from "@/utils/type"
 import { Clock, CookingPot, ChefHat } from "lucide-react"
 import { RecipeModal } from "./RecipeModal"
 import { formatCookingTime } from "@/utils/utils"
@@ -7,10 +7,10 @@ import { Button } from "@/components/ui/button"
 
 
 
-export default function RecipeGrid({ recipeWithIngredients }: { recipeWithIngredients: RecipeWithIngredients[] }) {
+export default function RecipeGrid({ recipeWithIngredients }: { recipeWithIngredients: RecipeWithIngredientsAndSteps[] }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {recipeWithIngredients.map(({ recipe, ingredients }) => (
+      {recipeWithIngredients.map(({ recipe, ingredients, steps }) => (
 
         <div
           className="group bg-card rounded-xl shadow-md border border-border/50 hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col h-full"
@@ -43,7 +43,7 @@ export default function RecipeGrid({ recipeWithIngredients }: { recipeWithIngred
                 <Button className="w-full">
                   View Recipe
                 </Button>
-              } />
+              } steps={steps} />
             </div>
           </div>
         </div>

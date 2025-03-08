@@ -121,7 +121,7 @@ export default async function TablesPage() {
         .filter(diet => diet.follower_count >= 1) // HAVING COUNT(ud.user_id) >= 1
         .sort((a, b) => b.diet_name.localeCompare(a.diet_name)); // ORDER BY d.diet_name DESC
 
-    console.log("Processed Data:", processedDietUser);
+    // console.log("Processed Data:", processedDietUser);
 
     
 

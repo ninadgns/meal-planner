@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Diets, DietType1, RecipeWithIngredients } from "@/utils/type";
+import { Diets, DietType1, RecipeWithIngredients, RecipeWithIngredientsAndSteps } from "@/utils/type";
 import { ChevronsUpDown } from "lucide-react";
 import { useMemo, useState } from "react";
 import FilterSidebar from "./components/FilterSidebar";
@@ -24,8 +24,8 @@ export interface FilterProps {
 // Define sort criteria type to include all sortable properties
 type SortCriteria = "cooking_time" | "calories_per_serving" | "protein_per_serving" | "carbs_per_serving" | "fat_per_serving" | "";
 
-const FilterScreen = ({ recipeWithIngredients, dietData }: { recipeWithIngredients: RecipeWithIngredients[], dietData: DietData[] }) => {
-  const [filteredRecipes, setFilteredRecipes] = useState<RecipeWithIngredients[]>(recipeWithIngredients);
+const FilterScreen = ({ recipeWithIngredients, dietData }: { recipeWithIngredients: RecipeWithIngredientsAndSteps[], dietData: DietData[] }) => {
+  const [filteredRecipes, setFilteredRecipes] = useState<RecipeWithIngredientsAndSteps[]>(recipeWithIngredients);
   const [sortCriteria, setSortCriteria] = useState<SortCriteria>("");
   const [view, setView] = useState<"grid" | "table">("grid");
 
@@ -63,7 +63,7 @@ const FilterScreen = ({ recipeWithIngredients, dietData }: { recipeWithIngredien
   }, [recipeWithIngredients]);
 
   // Sort function to handle all criteria
-  const sortRecipes = (recipes: RecipeWithIngredients[], criteria: SortCriteria) => {
+  const sortRecipes = (recipes: RecipeWithIngredientsAndSteps[], criteria: SortCriteria) => {
     if (!criteria) return recipes;
 
     return [...recipes].sort((a, b) => a.recipe[criteria] - b.recipe[criteria]);
@@ -107,10 +107,10 @@ const FilterScreen = ({ recipeWithIngredients, dietData }: { recipeWithIngredien
     {} as { [key: string]: DietPreference }
   );
 
-  console.log(DIET_PREFERENCES);
+  // console.log(DIET_PREFERENCES);
 
   const handleFilterApply = (filters: FilterProps) => {
-    console.log("Applied Filters:", filters);
+    // console.log("Applied Filters:", filters);
 
     // Filter recipes based on criteria
     const filtered = recipeWithIngredients.filter(({ recipe, ingredients }) => {

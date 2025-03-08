@@ -21,8 +21,8 @@ const chartConfig = {
 export function UserToDietChart({ chartData }: { chartData: DietUser[] }) {
 
     return (
-        <div className="">
-            <h2 className="text-xl font-bold mb-4">User to Diet Chart</h2>
+        <div className="max-w-4xl mx-auto space-y-6">
+            <h2 className="text-xl font-bold mb-4">Users following each diet</h2>
             <ChartContainer config={chartConfig} className="aspect-auto h-[250px] w-4/5 mx-auto">
                 <BarChart accessibilityLayer data={chartData}>
                     <ChartTooltip

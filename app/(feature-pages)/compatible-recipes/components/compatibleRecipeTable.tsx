@@ -167,6 +167,7 @@ export function RecipesTable({ recipes }: RecipesTableProps) {
                     ingredients={selectedRecipe.ingredients}
                     isOpen={!!selectedRecipe}
                     onClose={() => setSelectedRecipe(null)}
+                    steps={selectedRecipe.steps}
                 />
             )}
         </div>

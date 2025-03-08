@@ -14,7 +14,7 @@ import { ArrowUpDown, Pointer } from 'lucide-react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import { RecipeModal } from "./RecipeModal"
-import { RecipeWithIngredients } from "@/utils/type"
+import { RecipeWithIngredientsAndSteps } from "@/utils/type"
 import { formatCookingTime } from "@/utils/utils"
 import { SortButton } from "@/components/sort-button"
 
@@ -22,7 +22,7 @@ import { SortButton } from "@/components/sort-button"
 
 
 // Table Columns Definition
-const columns: ColumnDef<RecipeWithIngredients>[] = [
+const columns: ColumnDef<RecipeWithIngredientsAndSteps>[] = [
   {
     accessorKey: "recipe.title",
     header: ({ column }) => <SortButton column={column} label="Title" />
@@ -61,13 +61,13 @@ const columns: ColumnDef<RecipeWithIngredients>[] = [
 ]
 
 interface RecipeTableProps {
-  data: RecipeWithIngredients[];
-  onRowClick?: (row: RecipeWithIngredients) => void;
+  data: RecipeWithIngredientsAndSteps[];
+  onRowClick?: (row: RecipeWithIngredientsAndSteps) => void;
 }
 
 export function RecipeTable({ data, onRowClick }: RecipeTableProps) {
   const [sorting, setSorting] = useState<SortingState>([])
-  const [selectedRow, setSelectedRow] = useState<RecipeWithIngredients | null>(null)
+  const [selectedRow, setSelectedRow] = useState<RecipeWithIngredientsAndSteps | null>(null)
 
   const table = useReactTable({
     data,
@@ -130,6 +130,7 @@ export function RecipeTable({ data, onRowClick }: RecipeTableProps) {
           ingredients={selectedRow.ingredients}
           isOpen={!!selectedRow}
           onClose={() => setSelectedRow(null)}
+          steps={selectedRow.steps}
         />
       )}
     </div>

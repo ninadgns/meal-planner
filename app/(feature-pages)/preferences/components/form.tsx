@@ -44,7 +44,7 @@ export default function UserPreferencesFormClient({
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("values", values);
+    // console.log("values", values);
 
     // Show loading toast before starting async operations
     const loadingToast = toast.loading("Updating your preferences...");
