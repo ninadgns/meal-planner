@@ -26,7 +26,6 @@ export default function DietaryPreferencesToggle({
   control, 
   dietaryOptions 
 }: DietaryPreferencesToggleProps) {
-  // UseController ensures better control over field updates and prevents unnecessary re-renders
   const { field } = useController({
     control,
     name: "dietaryPreferences",

@@ -56,7 +56,6 @@ export function AdminDashboardContainer({ dietUser, allergySafeIngredients, reci
                 scrollToChart={() => scrollToRef(chartRef)}
                 scrollToUserDietAllergyTable={() => scrollToRef(userDietAllergyTableRef)}
                 scrollToView={() => scrollToRef(viewRef)}
-                scrollToDelete={() => scrollToRef(scrollToDelete)}
             />
             <SidebarInset>
                 <div className="flex flex-col p-6 gap-8">

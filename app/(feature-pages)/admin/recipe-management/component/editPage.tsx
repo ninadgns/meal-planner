@@ -39,8 +39,10 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Trash2, Plus, Info } from 'lucide-react';
+import { Trash2, Plus, Info, ArrowLeft } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
+import { useRouter } from 'next/navigation';
+import { Recipe_Directions } from '@/utils/type';
 
 // Types from your schema
 type Recipes = {
@@ -66,6 +68,13 @@ type RecipeIngredients = {
     quantity_per_serving: number;
     recipe_id: number;
     unit: string;
+}
+
+type RecipeDirections = {
+    recipe_id: number;
+    step_order: number;
+    step_description: string;
+    time_duration_minutes: number | null;
 }
 
 type Category = {
@@ -105,13 +114,19 @@ const recipeFormSchema = z.object({
 
 type RecipeFormValues = z.infer<typeof recipeFormSchema>;
 
-const RecipeForm = () => {
+const RecipeForm = ({ recipeId }: { recipeId?: number }) => {
+    const router = useRouter();
     const [showNewIngredientDialog, setShowNewIngredientDialog] = useState(false);
     const [newIngredient, setNewIngredient] = useState({ name: '', category_id: '' });
     const [ingredients, setIngredients] = useState<Ingredients[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [loadingRecipe, setLoadingRecipe] = useState(!!recipeId);
     const [error, setError] = useState<string | null>(null);
+    const [pageTitle, setPageTitle] = useState(recipeId ? "Update Recipe" : "Create New Recipe");
+    const [pageDescription, setPageDescription] = useState(
+        recipeId ? "Update the details of your existing recipe." : "Fill in the details to add a new recipe to your collection."
+    );
 
     // Derived values
     const calculatedCalories = (carbs: number, protein: number, fat: number) => {
@@ -175,6 +190,78 @@ const RecipeForm = () => {
         fetchData();
     }, []);
 
+    // Fetch existing recipe data if recipeId is provided
+    useEffect(() => {
+        const fetchRecipe = async () => {
+            if (!recipeId) {
+                setLoadingRecipe(false);
+                return;
+            }
+
+            try {
+                const supabase = await createClient();
+
+                // Fetch recipe data
+                const { data: recipeData, error: recipeError } = await supabase
+                    .from('recipes')
+                    .select('*')
+                    .eq('recipe_id', recipeId)
+                    .single();
+
+                if (recipeError) throw recipeError;
+
+                // Fetch recipe ingredients
+                const { data: ingredientsData, error: ingredientsError } = await supabase
+                    .from('recipe_ingredients')
+                    .select('*')
+                    .eq('recipe_id', recipeId);
+
+                if (ingredientsError) throw ingredientsError;
+
+                // Fetch recipe directions
+                const { data: directionsData, error: directionsError } = await supabase
+                    .from('recipe_directions')
+                    .select('*')
+                    .eq('recipe_id', recipeId)
+                    .order('step_order');
+
+                if (directionsError) throw directionsError;
+
+                // Set form values from fetched data
+                form.reset({
+                    title: recipeData.title,
+                    description: recipeData.description || '',
+                    serving_size: recipeData.serving_size,
+                    carbs_per_serving: recipeData.carbs_per_serving,
+                    protein_per_serving: recipeData.protein_per_serving,
+                    fat_per_serving: recipeData.fat_per_serving,
+                    ingredients: ingredientsData.length > 0
+                        ? ingredientsData.map((ingredient: RecipeIngredients) => ({
+                            ingredient_id: ingredient.ingredient_id,
+                            quantity_per_serving: ingredient.quantity_per_serving,
+                            unit: ingredient.unit
+                        }))
+                        : [{ ingredient_id: 0, quantity_per_serving: 0, unit: 'g' }],
+                    directions: directionsData.length > 0
+                        ? directionsData.map((direction: Recipe_Directions) => ({
+                            step_order: direction.step_order,
+                            step_description: direction.step_description || '',
+                            time_duration_minutes: direction.time_duration_minutes
+                        }))
+                        : [{ step_order: 1, step_description: '', time_duration_minutes: null }]
+                });
+
+            } catch (err) {
+                console.error('Error fetching recipe data:', err);
+                setError('Failed to load recipe data. Please try again.');
+            } finally {
+                setLoadingRecipe(false);
+            }
+        };
+
+        fetchRecipe();
+    }, [recipeId, form]);
+
     // Submit handler
     const onSubmit = async (data: RecipeFormValues) => {
         try {
@@ -201,38 +288,61 @@ const RecipeForm = () => {
                 cooking_time: cookingTime
             };
 
-            // Insert recipe and get the new recipe ID
-            const { data: newRecipe, error: recipeError } = await supabase
-                .from('recipes')
-                .insert(recipeData)
-                .select('recipe_id')
-                .single();
-            
-                console.log(newRecipe)
+            let recipe_id = recipeId;
 
-            if (recipeError) throw recipeError;
+            if (recipeId) {
+                // Update existing recipe
+                const { error: recipeError } = await supabase
+                    .from('recipes')
+                    .update(recipeData)
+                    .eq('recipe_id', recipeId);
 
-            const recipe_id = newRecipe.recipe_id;
+                if (recipeError) throw recipeError;
+
+                // Delete existing recipe ingredients to replace them
+                const { error: deleteIngredientsError } = await supabase
+                    .from('recipe_ingredients')
+                    .delete()
+                    .eq('recipe_id', recipeId);
+
+                if (deleteIngredientsError) throw deleteIngredientsError;
+
+                // Delete existing recipe directions to replace them
+                const { error: deleteDirectionsError } = await supabase
+                    .from('recipe_directions')
+                    .delete()
+                    .eq('recipe_id', recipeId);
+
+                if (deleteDirectionsError) throw deleteDirectionsError;
+            } else {
+                // Insert new recipe and get the new recipe ID
+                const { data: newRecipe, error: recipeError } = await supabase
+                    .from('recipes')
+                    .insert(recipeData)
+                    .select('recipe_id')
+                    .single();
+
+                if (recipeError) throw recipeError;
+                recipe_id = newRecipe.recipe_id;
+            }
 
             // Insert recipe ingredients
             const ingredientsData = data.ingredients.map(ingredient => ({
-                recipe_id,
+                recipe_id: recipe_id!,
                 ingredient_id: ingredient.ingredient_id,
                 quantity_per_serving: ingredient.quantity_per_serving,
                 unit: ingredient.unit
             }));
-            console.log(ingredientsData.map(ingredient => ingredient.ingredient_id));
 
-            const { data: ingredientsInsertData, error: ingredientsError } = await supabase
+            const { error: ingredientsError } = await supabase
                 .from('recipe_ingredients')
-                .insert(ingredientsData).select('*');
+                .insert(ingredientsData);
 
             if (ingredientsError) throw ingredientsError;
 
-            console.log(ingredientsInsertData.map(ingredient => ingredient.ingredient_id));
             // Insert recipe directions
             const directionsData = data.directions.map(direction => ({
-                recipe_id,
+                recipe_id: recipe_id || 0,
                 step_order: direction.step_order,
                 step_description: direction.step_description,
                 time_duration_minutes: direction.time_duration_minutes
@@ -244,9 +354,9 @@ const RecipeForm = () => {
 
             if (directionsError) throw directionsError;
 
-            alert('Recipe saved successfully!');
-
-            //   form.reset(defaultValues);
+            alert(recipeId ? 'Recipe updated successfully!' : 'Recipe saved successfully!');
+            
+            router.push('/recipes');
 
         } catch (err) {
             console.error('Error saving recipe:', err);
@@ -324,6 +434,11 @@ const RecipeForm = () => {
         }
     };
 
+    // Go back to recipes list
+    const handleGoBack = () => {
+        router.push('/recipes');
+    };
+
     // Calculate calories and cooking time for display
     const watchCarbs = form.watch('carbs_per_serving');
     const watchProtein = form.watch('protein_per_serving');
@@ -333,7 +448,7 @@ const RecipeForm = () => {
     const totalCalories = calculatedCalories(watchCarbs, watchProtein, watchFat);
     const totalCookingTime = calculatedCookingTime(watchDirections);
 
-    if (isLoading) {
+    if (isLoading || loadingRecipe) {
         return <div className="flex justify-center items-center h-64">Loading...</div>;
     }
 
@@ -343,11 +458,20 @@ const RecipeForm = () => {
 
     return (
         <div className="container mx-auto py-6">
+            <Button
+                variant="ghost"
+                onClick={handleGoBack}
+                className="mb-4 flex items-center"
+            >
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Recipes
+            </Button>
+
             <Card className="w-full">
                 <CardHeader>
-                    <CardTitle>Create New Recipe</CardTitle>
+                    <CardTitle>{pageTitle}</CardTitle>
                     <CardDescription>
-                        Fill in the details to add a new recipe to your collection.
+                        {pageDescription}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -707,7 +831,9 @@ const RecipeForm = () => {
                             </div>
 
                             <CardFooter className="px-0 pt-6 flex justify-end">
-                                <Button type="submit">Save Recipe</Button>
+                                <Button type="submit">
+                                    {recipeId ? 'Update Recipe' : 'Save Recipe'}
+                                </Button>
                             </CardFooter>
                         </form>
                     </Form>

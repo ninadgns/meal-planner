@@ -88,7 +88,7 @@ export function RecipeModal({ recipe, ingredients, isOpen, onClose, trigger, ste
             <div>
               <h3 className="font-medium text-lg mb-3 flex items-center">
                 <span className="bg-primary/10 w-6 h-6 inline-flex items-center justify-center rounded-full mr-2 text-primary">
-                  <ChefHat className="h-3.5 w-3.5" />
+                  <Utensils className="h-3.5 w-3.5" />
                 </span>
                 Ingredients
               </h3>

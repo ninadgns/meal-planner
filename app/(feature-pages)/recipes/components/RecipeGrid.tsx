@@ -1,6 +1,6 @@
 "use client"
 import {  RecipeWithIngredientsAndSteps } from "@/utils/type"
-import { Clock, CookingPot, ChefHat } from "lucide-react"
+import { Clock, CookingPot, ChefHat, Utensils } from "lucide-react"
 import { RecipeModal } from "./RecipeModal"
 import { formatCookingTime } from "@/utils/utils"
 import { Button } from "@/components/ui/button"
@@ -34,7 +34,7 @@ export default function RecipeGrid({ recipeWithIngredients }: { recipeWithIngred
                   <span className="text-sm">{recipe.serving_size}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <ChefHat className="h-4 w-4 text-primary" />
+                  <Utensils className="h-4 w-4 text-primary" />
                   <span className="text-sm">{ingredients.length} ingredients</span>
                 </div>
               </div>

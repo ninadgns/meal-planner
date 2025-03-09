@@ -145,6 +145,7 @@ export const deleteAccountAction = async () => {
   }
   const { error } = await supabase.auth.admin.deleteUser(user.data.user?.id||"");
   if (error) {
+    console.log(error);
     return encodedRedirect("error", "/preferences", "Could not delete account");
   }
   return redirect("/sign-in");

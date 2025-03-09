@@ -12,7 +12,7 @@ import { Form, FormDescription, FormItem, FormLabel } from "@/components/ui/form
 import { createClient } from "@/utils/supabase/client";
 import { Diets, Ingredients } from "@/utils/type";
 import MultiSelectCombobox from "../../recipes/components/MultiSelect";
-import DietaryPreferencesToggle from "./diet-preference";
+import DietaryPreferencesToggle from "./DietaryPreferencesToggle";
 
 // Define form schema with dietary preferences and allergies
 const formSchema = z.object({
