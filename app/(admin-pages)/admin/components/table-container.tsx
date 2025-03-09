@@ -174,7 +174,7 @@ export function AdminDashboard({
     },
     {
       text: "Diet Management",
-      path: "/admin/diet-management",
+      path: "/admin/diets-management",
       icon: SquareMenu,
       type: "link"
     }

@@ -436,7 +436,7 @@ const RecipeForm = ({ recipeId }: { recipeId?: number }) => {
 
     // Go back to recipes list
     const handleGoBack = () => {
-        router.push('/recipes');
+        router.push('/admin');
     };
 
     // Calculate calories and cooking time for display
@@ -464,7 +464,7 @@ const RecipeForm = ({ recipeId }: { recipeId?: number }) => {
                 className="mb-4 flex items-center"
             >
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Recipes
+                Back to Admin
             </Button>
 
             <Card className="w-full">
