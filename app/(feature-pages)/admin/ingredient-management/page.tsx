@@ -1,12 +1,10 @@
 import { createClient } from "@/utils/supabase/server";
 import React from "react";
-import IngredientManagementPage from "./ingredientManagementPage";
+import IngredientManagementPage from "./components/ingredientManagementPageOld";
+import { Category } from "@/utils/type";
 
 // Type definitions for the data from Supabase
-interface Category {
-  category_id: string;
-  category_name: string;
-}
+
 
 interface Ingredient {
   ingredient_id: number;
@@ -22,35 +20,35 @@ interface RecipeIngredient {
 }
 
 const IngredientManagementPageWrapper = async () => {
-    const supabase = await createClient();
-    
-    const { data: ingredientsMaybeNull, error: ingredientError } = await supabase
-        .from("ingredients")
-        .select("ingredient_id, name, category_id(category_id, category_name)");
-    
-    const { data: recipeIngredientsMaybeNull, error: recipeIngredientsError } = await supabase
-        .from("recipe_ingredients")
-        .select("recipe_id(title), ingredient_id");
-    
-    if (ingredientError) {
-        console.error("Error fetching ingredients:", ingredientError);
-    }
-    
-    if (recipeIngredientsError) {
-        console.error("Error fetching recipe ingredients:", recipeIngredientsError);
-    }
-    
-    const ingredients: Ingredient[] = ingredientsMaybeNull || [];
-    const recipeIngredients: RecipeIngredient[] = recipeIngredientsMaybeNull || [];
-    
-    return (
-        <div>
-            <IngredientManagementPage 
-                ingredients={ingredients} 
-                recipeIngredients={recipeIngredients} 
-            />
-        </div>
-    );
+  const supabase = await createClient();
+
+  const { data: ingredientsMaybeNull, error: ingredientError } = await supabase
+    .from("ingredients")
+    .select("ingredient_id, name, category_id(category_id, category_name, description)");
+
+  const { data: recipeIngredientsMaybeNull, error: recipeIngredientsError } = await supabase
+    .from("recipe_ingredients")
+    .select("recipe_id(title), ingredient_id");
+
+  if (ingredientError) {
+    console.error("Error fetching ingredients:", ingredientError);
+  }
+
+  if (recipeIngredientsError) {
+    console.error("Error fetching recipe ingredients:", recipeIngredientsError);
+  }
+
+  const ingredients: Ingredient[] = ingredientsMaybeNull || [];
+  const recipeIngredients: RecipeIngredient[] = recipeIngredientsMaybeNull || [];
+
+  return (
+    <div>
+      <IngredientManagementPage
+        ingredients={ingredients}
+        recipeIngredients={recipeIngredients}
+      />
+    </div>
+  );
 };
 
 export default IngredientManagementPageWrapper;
