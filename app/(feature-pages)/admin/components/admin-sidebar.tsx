@@ -1,6 +1,6 @@
 "use client"
 
-import { Users, Receipt, ChefHat } from "lucide-react"
+import { Utensils, BarChart, ShieldCheck, Eye, Database, List, Package, ChefHat } from "lucide-react"; // Import icons
 
 import {
   Sidebar,
@@ -48,52 +48,32 @@ export function AppSidebar({ scrollToUserDietAllergyTable, scrollToAllergy, scro
           <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              <SidebarMenuItem>
-                <SidebarMenuButton onClick={scrollToRecipeDiet}>
-                  <Receipt className="size-4" />
-                  <span>Recipes based on diets</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton onClick={scrollToChart}>
-                  <Receipt className="size-4" />
-                  <span>User to Diet Chart</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton onClick={scrollToUserDietAllergyTable}>
-                  <Receipt className="size-4" />
-                  <span>User Diet and Allergy Table</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton onClick={scrollToAllergy}>
-                  <Receipt className="size-4" />
-                  <span>Allergy Safe Ingredients</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton onClick={scrollToView}>
-                  <Receipt className="size-4" />
-                  <span>Database Views</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton onClick={() => { router.push("/admin/recipe-management") }}>
-                  <Receipt className="size-4" />
-                  <span>Recipe Management</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton onClick={() => { router.push("/admin/ingredient-management") }}>
-                  <Receipt className="size-4" />
-                  <span>Ingredient Management</span>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
+              {[
+                { text: "Recipes based on diets", onClick: scrollToRecipeDiet, icon: Utensils },
+                { text: "User to Diet Chart", onClick: scrollToChart, icon: BarChart },
+                { text: "User Diet and Allergy Table", onClick: scrollToUserDietAllergyTable, icon: ShieldCheck },
+                { text: "Allergy Safe Ingredients", onClick: scrollToAllergy, icon: ShieldCheck },
+                { text: "Database Views", onClick: scrollToView, icon: Eye },
+                { text: "Recipe Management", onClick: () => router.push("/admin/recipe-management"), icon: List },
+                { text: "Ingredient Management", onClick: () => router.push("/admin/ingredient-management"), icon: Package }
+              ].map(({ text, onClick, icon: Icon }, index) => (
+                <SidebarMenuItem key={index}>
+                  <SidebarMenuButton
+                    onClick={onClick}
+                    className="flex items-center gap-3 px-4 py-2 w-full rounded-md 
+                         bg-secondary shadow-sm transition-all duration-300
+                         hover:bg-primary hover:text-secondary hover:shadow-md"
+                  >
+                    <Icon className="size-5 text-gray-500 transition-colors" />
+                    <span>{text}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
       <SidebarRail />
     </Sidebar>
   )

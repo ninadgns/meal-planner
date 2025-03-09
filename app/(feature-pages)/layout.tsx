@@ -80,21 +80,28 @@ export default async function RootLayout({
               {/* Desktop Navigation */}
               <nav className="hidden md:flex items-center gap-6 mx-6">
                 <Link
-                  className="text-sm font-medium transition-colors hover:text-primary hover:underline py-1 px-2 rounded-md hover:bg-primary/10"
+                  className="text-sm font-medium transition-all duration-300 px-4 py-2 rounded-md 
+               bg-gray-50 shadow-md text-gray-800 
+               hover:bg-primary/10 hover:shadow-md hover:scale-105 hover:text-primary"
                   href="/recipes">
                   Recipes
                 </Link>
                 <Link
-                  className="text-sm font-medium transition-colors hover:text-primary hover:underline py-1 px-2 rounded-md hover:bg-primary/10"
+                  className="text-sm font-medium transition-all duration-300 px-4 py-2 rounded-md 
+               bg-gray-50 shadow-md sha text-gray-800 
+               hover:bg-primary/10 hover:shadow-md hover:scale-105 hover:text-primary"
                   href="/preferences">
                   Dietary Preferences
                 </Link>
                 <Link
-                  className="text-sm font-medium transition-colors hover:text-primary hover:underline py-1 px-2 rounded-md hover:bg-primary/10"
+                  className="text-sm font-medium transition-all duration-300 px-4 py-2 rounded-md 
+               bg-gray-50 shadow-md text-gray-800 
+               hover:bg-primary/10 hover:shadow-md hover:scale-105 hover:text-primary"
                   href="/compatible-recipes">
                   Compatible Recipes
                 </Link>
               </nav>
+
 
               {/* Theme and Auth */}
               <div className="flex items-center gap-2">
