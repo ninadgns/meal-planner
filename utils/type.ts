@@ -24,3 +24,4 @@ export type RecipeIngredients = Database["public"]["Tables"]["recipe_ingredients
 export type Diets = Database["public"]["Tables"]["diets"]["Row"];
 export type Recipe_Directions = Database["public"]["Tables"]["recipe_directions"]["Row"];
 export type DietType1 = Database["public"]["Tables"]["diets_type_1"]["Row"];
+export type DietType2 = Database["public"]["Tables"]["diets_type_2"]["Row"];
