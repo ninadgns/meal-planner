@@ -22,6 +22,7 @@ import {
   SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -78,29 +79,26 @@ export default async function RootLayout({
 
               {/* Desktop Navigation */}
               {/* Desktop Navigation */}
-              <nav className="hidden md:flex items-center gap-6 mx-6">
-                <Link
-                  className="text-sm font-medium transition-all duration-300 px-4 py-2 rounded-md 
-               bg-gray-50 shadow-md text-gray-800 
-               hover:bg-primary/10 hover:shadow-md hover:scale-105 hover:text-primary"
-                  href="/recipes">
-                  Recipes
-                </Link>
-                <Link
-                  className="text-sm font-medium transition-all duration-300 px-4 py-2 rounded-md 
-               bg-gray-50 shadow-md sha text-gray-800 
-               hover:bg-primary/10 hover:shadow-md hover:scale-105 hover:text-primary"
-                  href="/preferences">
-                  Dietary Preferences
-                </Link>
-                <Link
-                  className="text-sm font-medium transition-all duration-300 px-4 py-2 rounded-md 
-               bg-gray-50 shadow-md text-gray-800 
-               hover:bg-primary/10 hover:shadow-md hover:scale-105 hover:text-primary"
-                  href="/compatible-recipes">
-                  Compatible Recipes
-                </Link>
-              </nav>
+              {/* <nav className="hidden md:flex items-center gap-6 mx-6">
+                {[
+                  { name: "Recipes", href: "/recipes" },
+                  { name: "Dietary Preferences", href: "/preferences" },
+                  { name: "Compatible Recipes", href: "/compatible-recipes" },
+                ].map(({ name, href }) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    className={cn(
+                      "text-sm font-medium transition-all duration-300 px-4 py-2 rounded-md shadow-md",
+                      "hover:bg-primary/10 hover:shadow-lg hover:scale-105",
+                      "dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 dark:hover:text-white",
+                      "bg-gray-50 text-gray-800"
+                    )}
+                  >
+                    {name}
+                  </Link>
+                ))}
+              </nav> */}
 
 
               {/* Theme and Auth */}
@@ -108,50 +106,39 @@ export default async function RootLayout({
                 <ThemeSwitcher />
 
                 {/* Auth Status */}
-                {!hasEnvVars ? (
-                  <Badge variant="outline" className="hidden md:inline-flex">
-                    Update .env.local file
-                  </Badge>
-                ) : authUser ? (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-9 px-3 md:px-4">
-                        <span className="hidden md:inline-flex mr-1">Hey,</span>
-                        {userData?.user_name || 'User'}
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-[200px]">
-                      <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem asChild>
-                        <form action={signOutAction} className="w-full">
-                          <button type="submit" className="w-full text-left flex items-center gap-2">
-                            <LogOut className="h-4 w-4" />
-                            Sign out
-                          </button>
-                        </form>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <form action={deleteAccountAction} className="w-full">
-                          <button type="submit" className="w-full text-left text-destructive flex items-center gap-2">
-                            <Trash2 className="h-4 w-4" />
-                            Delete Account
-                          </button>
-                        </form>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                ) : (
-                  <div className="flex gap-2">
-                    <Button asChild size="sm" variant="ghost">
-                      <Link href="/sign-in">Sign in</Link>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className={cn(
+                      "text-sm font-medium transition-all duration-300 px-4 py-2 rounded-md shadow-md",
+                      "hover:bg-primary/10 hover:shadow-lg hover:scale-105",
+                      "dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700 dark:hover:text-white",
+                      "bg-gray-50 text-gray-800"
+                    )}>
+                      <span className="hidden md:inline-flex mr-1">Hey,</span>
+                      {userData?.user_name || 'User'}
                     </Button>
-                    <Button asChild size="sm" variant="default" className="hidden md:inline-flex">
-                      <Link href="/sign-up">Sign up</Link>
-                    </Button>
-                  </div>
-                )}
-
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-[200px]">
+                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <form action={signOutAction} className="w-full">
+                        <button type="submit" className="w-full text-left flex items-center gap-2">
+                          <LogOut className="h-4 w-4" />
+                          Sign out
+                        </button>
+                      </form>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <form action={deleteAccountAction} className="w-full">
+                        <button type="submit" className="w-full text-left text-destructive flex items-center gap-2">
+                          <Trash2 className="h-4 w-4" />
+                          Delete Account
+                        </button>
+                      </form>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
                 {/* Mobile Menu */}
                 <Sheet>
                   <SheetTrigger asChild>

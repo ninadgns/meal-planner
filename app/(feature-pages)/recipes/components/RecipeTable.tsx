@@ -128,9 +128,9 @@ export function RecipeTable({ data, onRowClick }: RecipeTableProps) {
         <RecipeModal
           recipe={selectedRow.recipe}
           ingredients={selectedRow.ingredients}
+          steps={selectedRow.steps}
           isOpen={!!selectedRow}
           onClose={() => setSelectedRow(null)}
-          steps={selectedRow.steps}
         />
       )}
     </div>

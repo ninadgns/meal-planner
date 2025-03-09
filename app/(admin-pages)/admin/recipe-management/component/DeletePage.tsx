@@ -2,6 +2,8 @@
 import React, { useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import { Recipes } from '@/utils/type';
+import { Button } from '@/components/ui/button';
+import { RecipeModalSlow } from '@/app/(feature-pages)/recipes/components/RecipeModalSlow';
 
 
 interface RecipeDeletePageProps {
@@ -70,13 +72,16 @@ const RecipeDeletePage: React.FC<RecipeDeletePageProps> = ({ recipeData }) => {
                                         <p className="text-gray-600 mt-1 line-clamp-2">{recipe.description}</p>
                                     )}
                                 </div>
-                                <button
-                                    onClick={() => handleDelete(recipe.recipe_id, recipe.title || recipe.title || 'this recipe')}
-                                    disabled={isDeleting}
-                                    className="ml-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50 transition-colors"
-                                >
-                                    {isDeleting ? 'Deleting...' : 'Delete'}
-                                </button>
+                                <div className="flex gap-2">
+                                    <RecipeModalSlow recipe_id={recipe.recipe_id}/>
+                                    <Button
+                                        onClick={() => handleDelete(recipe.recipe_id, recipe.title || recipe.title || 'this recipe')}
+                                        disabled={isDeleting}
+                                        variant="destructive"
+                                    >
+                                        {isDeleting ? 'Deleting...' : 'Delete'}
+                                    </Button>
+                                </div>
                             </li>
                         ))}
                     </ul>

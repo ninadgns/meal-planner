@@ -1,7 +1,6 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { createClient } from "@/utils/supabase/server";
-import { AdminDashboardContainer } from "./components/table-container";
-import { AllergySafeIngredientsProps } from "./components/allergy-safeList";
+import { AdminDashboard } from "./components/table-container";
 
 export interface UserDietAllergyData {
     id: string;
@@ -142,7 +141,7 @@ export default async function TablesPage() {
 
     return (
         <SidebarProvider>
-            <AdminDashboardContainer
+            <AdminDashboard
                 allergySafeIngredients={allergySafeIngredients}
                 recipeWithDiets={recipeWithDiets}
                 userDietAllergyData={userDietAllergyData}
