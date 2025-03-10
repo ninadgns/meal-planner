@@ -24,6 +24,8 @@ export interface DietUser {
     follower_count: number;
 }
 
+export interface DietRecipe { diet_name: string; recipe_count: number };
+
 export interface userRecipe {
     recipe_id: number | null;
     title: string | null;
@@ -136,8 +138,33 @@ export default async function TablesPage() {
     const view1Data = view1DataMaybeNull || [];
     const view2Data = view2DataMaybeNull || [];
     const view3Data = view3DataMaybeNull || [];
-    const {data: allRecipeMaybeNull, error: allRecipeError} = await supabase.from("recipes").select("*");
+    const { data: allRecipeMaybeNull, error: allRecipeError } = await supabase.from("recipes").select("*");
+
     const allRecipes = allRecipeMaybeNull || [];
+
+    // Transform to the desired output format
+    const processedDietRecipe: DietRecipe[] = [];
+    const dietCounts: Record<string, number> = {};
+
+    // Count recipes for each diet
+    recipeWithDiets.recipesWithDiets.forEach(recipe => {
+        recipe.applicable_diets.forEach(diet => {
+            if (dietCounts[diet]) {
+                dietCounts[diet]++;
+            } else {
+                dietCounts[diet] = 1;
+            }
+        });
+    });
+
+    // Convert to the required array format
+    for (const diet in dietCounts) {
+        processedDietRecipe.push({
+            diet_name: diet,
+            recipe_count: dietCounts[diet]
+        });
+    }
+
 
     return (
         <SidebarProvider>
@@ -146,11 +173,12 @@ export default async function TablesPage() {
                 recipeWithDiets={recipeWithDiets}
                 userDietAllergyData={userDietAllergyData}
                 dietUser={processedDietUser}
+                dietRecipe={processedDietRecipe}
                 view1Data={view1Data}
                 view2Data={view2Data}
                 view3Data={view3Data}
                 allRecipe={allRecipes}
-                
+
             />
         </SidebarProvider>
     );

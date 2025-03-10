@@ -23,7 +23,7 @@ import {
 
 import AllergySafeIngredients, { AllergySafeIngredientsProps } from "./allergy-safeList"
 import RecipesWithDiets, { RecipesWithDietsProps } from "./recipe-diet"
-import { DietUser, UserDietAllergyData, userRecipe } from "../page"
+import { DietRecipe, DietUser, UserDietAllergyData, userRecipe } from "../page"
 import UserDietAllergyTable from "./user-diet-table"
 import { UserToDietChart } from "./chart"
 import UserRecipeTable from "./viewTable"
@@ -40,6 +40,14 @@ import { Button } from "@/components/ui/button"
 import path from "path"
 import React from "react"
 
+
+export interface CombinedDietStats {
+  diet_name: string;
+  follower_count: number;
+  recipe_count: number;
+}
+
+
 interface AdminDashboardProps {
   allergySafeIngredients: AllergySafeIngredientsProps
   recipeWithDiets: RecipesWithDietsProps
@@ -47,6 +55,7 @@ interface AdminDashboardProps {
   dietUser: DietUser[]
   view1Data: userRecipe[]
   view2Data: userRecipe[]
+  dietRecipe: DietRecipe[]
   view3Data: userRecipe[]
   allRecipe: Recipes[]
 }
@@ -59,6 +68,7 @@ export function AdminDashboard({
   view1Data,
   view2Data,
   view3Data,
+  dietRecipe,
   allRecipe
 }: AdminDashboardProps) {
   const router = useRouter()
@@ -91,8 +101,6 @@ export function AdminDashboard({
     }
   };
 
-
-
   // Update active section on scroll
   useEffect(() => {
     const handleScroll = () => {
@@ -120,10 +128,7 @@ export function AdminDashboard({
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  // Define navigation menu items
-  // Define navigation menu items
   const menuItems = [
-    // Scroll menu items
     {
       text: "Recipes based on diets",
       id: "recipe-diet",
@@ -132,7 +137,7 @@ export function AdminDashboard({
       type: "scroll"
     },
     {
-      text: "User to Diet Chart",
+      text: "Diet Bar Chart",
       id: "chart",
       onClick: () => scrollToRef(chartRef, "chart"),
       icon: BarChart,
@@ -179,6 +184,37 @@ export function AdminDashboard({
       type: "link"
     }
   ]
+
+  
+
+  // Merge the data
+  const combinedDietStats: CombinedDietStats[] = [];
+
+  // Use a Map for efficient lookups by diet name
+  const dietRecipeMap = new Map(dietRecipe.map(item => [item.diet_name, item.recipe_count]));
+
+  // Combine the data
+  dietUser.forEach(dietUser => {
+    combinedDietStats.push({
+      diet_name: dietUser.diet_name,
+      follower_count: dietUser.follower_count,
+      recipe_count: dietRecipeMap.get(dietUser.diet_name) || 0
+    });
+  });
+
+  // Add any diets that are in dietRecipes but not in processedDietUser
+  dietRecipe.forEach(dietRecipe => {
+    if (!dietUser.some(user => user.diet_name === dietRecipe.diet_name)) {
+      combinedDietStats.push({
+        diet_name: dietRecipe.diet_name,
+        follower_count: 0,
+        recipe_count: dietRecipe.recipe_count
+      });
+    }
+  });
+
+  console.log(combinedDietStats);
+
 
   return (
     <>
@@ -245,7 +281,7 @@ export function AdminDashboard({
           </div>
 
           <div ref={chartRef} id="chart" className="">
-            <UserToDietChart chartData={dietUser} />
+            <UserToDietChart chartData={combinedDietStats} />
           </div>
 
           <div ref={userDietAllergyTableRef} id="user-diet-allergy">
