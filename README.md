@@ -1,6 +1,22 @@
-# Next.js 15 + Supabase Project
+# NutriCulinary - Personalized Meal Planning Platform
 
-This repository contains a Next.js 15 project configured with Supabase. Follow the instructions below to set up and run the project locally.
+NutriCulinary is a comprehensive meal planning web application that helps users discover recipes tailored to their dietary preferences, nutritional goals, and available ingredients.
+
+## Features
+
+- **Personalized Recipe Suggestions**: Get recipe recommendations based on your dietary preferences and nutritional goals
+- **Ingredient-Based Recipe Search**: Find recipes using ingredients you already have at home
+- **User Preference Management**: Save your dietary preferences for personalized recipe recommendations
+- **Recipe Browser**: Explore our collection of recipes with detailed instructions and nutritional information
+- **Admin Dashboard**: Manage recipes, ingredients, and dietary categories (admin access only)
+
+## Tech Stack
+
+- **Frontend**: Next.js 15, React, TypeScript
+- **UI Components**: shadcn/ui component library
+- **Authentication**: Supabase Authentication
+- **Database**: Supabase Database
+- **Styling**: Tailwind CSS
 
 ## Prerequisites
 
@@ -59,6 +75,31 @@ To preview the production build:
 pnpm start
 ```
 
+## Project Structure
+
+- `/app`: Next.js app directory containing page components and routes
+  - `/(admin-pages)`: Admin dashboard pages
+  - `/(auth-pages)`: Authentication pages (sign-in, sign-up)
+  - `/(feature-pages)`: Main feature pages (recipes, preferences)
+- `/components`: Reusable UI components
+- `/lib`: Utility functions and shared logic
+- `/utils`: Helper functions and type definitions
+- `/hooks`: Custom React hooks
+
+## Features in Detail
+
+### Recipe Discovery
+Users can browse recipes by categories, dietary restrictions, or search by specific ingredients they have available.
+
+### Personalized Recommendations
+After creating an account and setting preferences, users receive personalized recipe suggestions that match their dietary needs and preferences.
+
+### Preference Management
+Users can specify dietary restrictions, allergies, and preferred cuisines to receive more relevant recommendations.
+
+### Admin Panel
+Administrators can manage recipes, ingredients, and dietary categories through a dedicated admin interface.
+
 ## Learn More
 
 - [Next.js Documentation](https://nextjs.org/docs)
@@ -68,7 +109,11 @@ pnpm start
 
 Contributions are welcome! Please submit a pull request or open an issue for any bugs or suggestions.
 
+## License
+
+This project is licensed under the MIT License.
+
 ---
 
-Thank you for using this project! Happy coding!
+Thank you for using NutriCulinary! Happy meal planning!
 
