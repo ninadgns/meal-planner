@@ -98,7 +98,7 @@ After creating an account and setting preferences, users receive personalized re
 Users can specify dietary restrictions, allergies, and preferred cuisines to receive more relevant recommendations.
 
 ### Admin Panel
-Administrators can manage recipes, ingredients, and dietary categories through a dedicated admin interface.
+Administrators can manage recipes, ingredients, and dietary categories, can see statistical views through a dedicated admin interface.
 
 ## Learn More
 
